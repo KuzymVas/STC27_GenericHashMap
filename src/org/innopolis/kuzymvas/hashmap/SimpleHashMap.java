@@ -1,15 +1,11 @@
 package org.innopolis.kuzymvas.hashmap;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
-import java.util.List;
-
 public class SimpleHashMap implements HashMap{
 
-    private class ListNode { // Класс узла списка, хранимого в каждой из корзин
+    private static class ListNode { // Класс узла списка, хранимого в каждой из корзин
 
         // Пара ключ и значение
-        private Object key;
+        private final Object key;
         private Object value;
         // Ссылки для организации двусвязного списка
         private ListNode next;
