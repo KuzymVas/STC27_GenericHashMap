@@ -46,7 +46,8 @@ public class SimpleHashMap implements HashMap{
          * @return - найденный узел или же null, если поиск не удался.
          */
         public ListNode findByKey(Object key) {
-            if (this.key == key) {
+            if ((this.key == null && key == null)
+                    || (this.key != null && this.key.equals(key))) {
                 return this;
             }
             else if (this.next == null) {
