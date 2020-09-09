@@ -1,6 +1,9 @@
 package org.innopolis.kuzymvas.hashmap;
 
-public class SimpleHashMap implements HashMap{
+import java.util.Arrays;
+import java.util.Objects;
+
+public class SimpleHashMap implements HashMap {
 
     private static class ListNode { // Класс узла списка, хранимого в каждой из корзин
 
@@ -13,7 +16,8 @@ public class SimpleHashMap implements HashMap{
 
         /**
          * Создает новый узел списка с заданной парой ключ-значение
-         * @param key - ключ
+         *
+         * @param key   - ключ
          * @param value - значение
          */
         public ListNode(Object key, Object value) {
@@ -25,7 +29,8 @@ public class SimpleHashMap implements HashMap{
 
         /**
          * Создает новый узел списка с заданной парой ключ-значение и вставляет его перед данным
-         * @param key - ключ
+         *
+         * @param key   - ключ
          * @param value - значение
          * @return - вновь созданный узел списка
          */
@@ -42,6 +47,7 @@ public class SimpleHashMap implements HashMap{
         /**
          * Односторонний поиск внутри списка  по ключую Возвращает либо узел списка с заданным ключем,
          * либо null, если такого узла не существует
+         *
          * @param key - искомый ключ
          * @return - найденный узел или же null, если поиск не удался.
          */
@@ -49,11 +55,9 @@ public class SimpleHashMap implements HashMap{
             if ((this.key == null && key == null)
                     || (this.key != null && this.key.equals(key))) {
                 return this;
-            }
-            else if (this.next == null) {
+            } else if (this.next == null) {
                 return null;
-            }
-            else return this.next.findByKey(key);
+            } else return this.next.findByKey(key);
         }
 
         /**
@@ -78,17 +82,60 @@ public class SimpleHashMap implements HashMap{
 
         /**
          * Проверяет является ли данный узел первым в списке
+         *
          * @return - true, если у узла нет предшественника, иначе false
          */
         public boolean isHead() {
             return this.prev == null;
         }
 
+        public Object getKey() {
+            return key;
+        }
+
         public ListNode getNext() {
             return next;
         }
 
+        @Override
+        public String toString() {
+            StringBuilder strB = new StringBuilder();
+            this.describeSelf(strB);
+            return strB.toString();
+        }
 
+        /**
+         * Добавляет описание(ключ и значение) этого элемента в StringBuilder
+         *
+         * @param strB - StringBuilder, в который нужно добавить описание
+         */
+        public void describeSelf(StringBuilder strB) {
+            strB.append("{key=");
+            if (key != null) {
+                strB.append(key.toString());
+            } else {
+                strB.append("null");
+            }
+            strB.append(", value=");
+            if (value != null) {
+                strB.append(value.toString());
+            } else {
+                strB.append("null");
+            }
+            strB.append("}");
+        }
+
+        /**
+         * Добавляет описание (ключ и значение) этого элемента и всех следующих за ним в StringBuilder
+         *
+         * @param strB - StringBuilder, в который следует добавить описания.
+         */
+        public void describeList(StringBuilder strB) {
+            describeSelf(strB);
+            if (this.next != null) {
+                this.next.describeList(strB);
+            }
+        }
     }
 
     ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
@@ -104,6 +151,7 @@ public class SimpleHashMap implements HashMap{
 
     /**
      * Создаем хэш таблицу с заданным положительным числом корзин
+     *
      * @param bucketNumber - число корзин. Должно быть строго больше 0
      * @throws IllegalArgumentException - выбрасывается, если число корзин меньше, либо равно нулю.
      */
@@ -115,10 +163,11 @@ public class SimpleHashMap implements HashMap{
 
     /**
      * Возвращает элемент из хранилища, содержащий пару с заданным ключем, или null, если ключ не найден
+     *
      * @param key - искомый ключ
      * @return - элемент, хранящий пару с данным ключем или null, если ключ не найден
      */
-    private ListNode findByKey(Object key)  {
+    private ListNode findByKey(Object key) {
         int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
         if (buckets[keyHash] == null) {
             return null;
@@ -132,14 +181,12 @@ public class SimpleHashMap implements HashMap{
         if (buckets[keyHash] == null) {
             buckets[keyHash] = new ListNode(key, value);
             size++;
-        }
-        else {
+        } else {
             ListNode target = buckets[keyHash].findByKey(key);
             if (target == null) {
                 buckets[keyHash] = buckets[keyHash].putInFront(key, value);
                 size++;
-            }
-            else {
+            } else {
                 target.setValue(value);
             }
         }
@@ -148,7 +195,7 @@ public class SimpleHashMap implements HashMap{
 
     @Override
     public void replace(Object key, Object value) throws KeyNotPresentException {
-        ListNode target =findByKey(key);
+        ListNode target = findByKey(key);
         if (target == null) {
             throw new KeyNotPresentException("Key not found during replace attempt");
         }
@@ -167,7 +214,7 @@ public class SimpleHashMap implements HashMap{
     @Override
     public Object remove(Object key) throws KeyNotPresentException {
         int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
-        ListNode target = (buckets[keyHash] == null) ? null :buckets[keyHash].findByKey(key);
+        ListNode target = (buckets[keyHash] == null) ? null : buckets[keyHash].findByKey(key);
         if (target == null) {
             throw new KeyNotPresentException("Key not found during get attempt");
         }
@@ -187,5 +234,50 @@ public class SimpleHashMap implements HashMap{
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder strB = new StringBuilder("SimpleHashMap{ buckets=");
+        for (int i = 0; i < buckets.length; i++) {
+            strB.append("bucket[").append(i).append("]{");
+            buckets[i].describeList(strB);
+            strB.append((i < buckets.length - 1) ? "}," : "}");
+        }
+        strB.append(", size=").append(size).append(" }");
+        return strB.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleHashMap that = (SimpleHashMap) o;
+        if (this.size != that.size) // разные размеры -> не равны
+            return false;
+        for (ListNode bucket : buckets) { //  Для каждого ведра
+            ListNode curr = bucket;
+            while (curr != null) { // Пока не дошли до конца ведра
+                Object key = curr.getKey(); // Берем ключ пары
+                ListNode thatCurr = that.findByKey(key); // Ищем его в другом
+                // Если не нашли или знаение не совпало - не равны
+                if (thatCurr == null) {
+                    return false;
+                }
+                if (!(curr.getValue() == null && thatCurr.getValue() == null)) {
+                    if (!curr.getValue().equals(thatCurr.getValue()))
+                        return false;
+                }
+                curr = curr.getNext(); // глубже идем в ведро
+            }
+        }
+        return true; // Если размеры совпали и каждая наша пара есть в другом -> равны
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size);
+        result = 31 * result + Arrays.hashCode(buckets);
+        return result;
     }
 }

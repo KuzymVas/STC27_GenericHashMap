@@ -49,7 +49,7 @@ public class SimpleHashMapTest {
         values.add(2L);
         values.add(null);
         values.add("");
-        values.add(hashmap); // Нет запрета, что хранилище не может хранить ссылку на себя.
+        values.add(new SimpleHashMap(1)); // Нет запрета, что хэш таблица не может хранить ссылку на хэш таблицу.
         // "Случайный" порядок для имитации произвольного доступа к элементам в хранилище
         shuffle = new ArrayList<>(7);
         shuffle.add(3);
@@ -65,6 +65,8 @@ public class SimpleHashMapTest {
         invalidKey = 42;
 
     }
+
+
 
     @Test
     public void testConstructorException() {
@@ -83,6 +85,24 @@ public class SimpleHashMapTest {
 
         }
     }
+
+    @Test
+    public void testToString() {
+        try {
+            HashMap hm =new SimpleHashMap(3);
+            hm.put("key1","val1");
+            hm.put("key2","val2");
+            hm.put("key3","val3");
+            hm.put("key4","val4");
+            hm.put("key5","val5");
+            System.out.println("hm.toString() = " + hm.toString());
+        }
+        catch (IllegalArgumentException ignored) {
+            Assert.fail("Was unable to create hash map with a given bucker count");
+        }
+    }
+
+
 
     @Test
     public void testEmptySize() {
@@ -145,6 +165,48 @@ public class SimpleHashMapTest {
                 Assert.fail("Hash map 'get' method threw an exception at key-value [" + i + "].");
             }
         }
+
+    }
+
+    @Test
+    public void testEqualsEmpty() {
+        HashMap otherHashMap = new SimpleHashMap();
+        Assert.assertEquals("Пустые хэш таблицы не равны между собой", hashmap, otherHashMap);
+    }
+
+    @Test
+    public void testEqualsSingle() {
+        HashMap otherHashMap = new SimpleHashMap();
+        hashmap.put(keys.get(0), values.get(0));
+        otherHashMap.put(keys.get(0), values.get(0));
+        Assert.assertEquals("Хэш таблицы c одним одинаковым элементом не равны между собой", hashmap, otherHashMap);
+    }
+
+    @Test
+    public void testEqualsMultiple() {
+        HashMap otherHashMap = new SimpleHashMap();
+
+        for (int i = 0; i < keys.size(); i++) {
+            hashmap.put(keys.get(i), values.get(i));
+        }
+        for (int i = keys.size() - 1; i > -1; i--) {
+            otherHashMap.put(keys.get(i), values.get(i));
+        }
+        Assert.assertEquals("Заполненные одними элементами в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
+
+    }
+
+    @Test
+    public void testEqualsCollision() {
+        HashMap otherHashMap = new SimpleHashMap();
+
+        for (int i = 0; i < keysForCollision.size(); i++) {
+            hashmap.put(keysForCollision.get(i), values.get(i));
+        }
+        for (int i = keysForCollision.size() - 1; i > -1; i--) {
+            otherHashMap.put(keysForCollision.get(i), values.get(i));
+        }
+        Assert.assertEquals("Заполненные одними элементами с коллизиями в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
 
     }
 
