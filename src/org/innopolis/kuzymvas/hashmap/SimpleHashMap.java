@@ -2,6 +2,8 @@ package org.innopolis.kuzymvas.hashmap;
 
 import com.sun.javaws.exceptions.InvalidArgumentException;
 
+import java.util.List;
+
 public class SimpleHashMap implements HashMap{
 
     private class ListNode { // Класс узла списка, хранимого в каждой из корзин
@@ -132,11 +134,19 @@ public class SimpleHashMap implements HashMap{
         int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
         if (buckets[keyHash] == null) {
             buckets[keyHash] = new ListNode(key, value);
+            size++;
         }
         else {
-            buckets[keyHash] = buckets[keyHash].putInFront(key, value);
+            ListNode target = buckets[keyHash].findByKey(key);
+            if (target == null) {
+                buckets[keyHash] = buckets[keyHash].putInFront(key, value);
+                size++;
+            }
+            else {
+                target.setValue(value);
+            }
         }
-        size++;
+
     }
 
     @Override
