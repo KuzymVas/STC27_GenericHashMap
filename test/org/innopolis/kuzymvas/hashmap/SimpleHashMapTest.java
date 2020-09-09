@@ -118,7 +118,7 @@ public class SimpleHashMapTest extends TestCase {
             assertEquals("Hash map size is incorrect after " + i + " replacement", keys.size(), hashmap.size());
             assertTrue("Hash map doesn't contain key[" + i + "], that was put in it", hashmap.containsKey(keys.get(i)));
             try {
-                assertEquals("Hash map returned incorrect value for a given key [" + i + "]", values.get(i), hashmap.get(keys.get(i)));
+                assertEquals("Hash map returned incorrect value for a given key [" + i + "]", replaceValue, hashmap.get(keys.get(i)));
             } catch (KeyNotPresentException e) {
                 fail("Hash map 'get' method threw an exception at key-value [" + i + "].");
             }
@@ -165,15 +165,15 @@ public class SimpleHashMapTest extends TestCase {
             hashmap.put(keys.get(i), values.get(i));
         }
         int expectedSize = hashmap.size();
-        for (Integer i : shuffle) {
+        for (int i = 0; i< keys.size(); i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
-                assertEquals("Hash map 'remove' returned incorrect value for a given key", values.get(0), hashmap.remove(keys.get(0)));
+                assertEquals("Hash map 'remove' returned incorrect value for a given key", values.get(i), hashmap.remove(keys.get(i)));
             } catch (KeyNotPresentException e) {
                 fail("Hash map 'remove' method threw an exception.");
             }
             expectedSize--;
             assertEquals("Hash map size is incorrect after " + i + " removal", expectedSize, hashmap.size());
-            assertTrue("Hash map does contain key, that was removed from it", !(hashmap.containsKey(keys.get(0))));
+            assertTrue("Hash map does contain key, that was removed from it", !(hashmap.containsKey(keys.get(i))));
         }
     }
 
