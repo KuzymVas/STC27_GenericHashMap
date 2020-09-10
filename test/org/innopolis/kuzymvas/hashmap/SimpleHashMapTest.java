@@ -19,6 +19,20 @@ public class SimpleHashMapTest {
 
     private static class ZeroHash {
 
+        private  final  int val;
+
+        public ZeroHash(int val) {
+            this.val = val;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ZeroHash that = (ZeroHash) o;
+            return (this.val == that.val);
+        }
+
         @Override
         public int hashCode() {
             return 0;
@@ -38,18 +52,18 @@ public class SimpleHashMapTest {
         keys.add(null);
         // Подготавливаем массив объектов-ключей, гарантированно вызывающих коллизии.
         keysForCollision = new ArrayList<>(5);
-        keysForCollision.add(new ZeroHash());
-        keysForCollision.add(new ZeroHash());
-        keysForCollision.add(new ZeroHash());
-        keysForCollision.add(new ZeroHash());
-        keysForCollision.add(new ZeroHash());
+        keysForCollision.add(new ZeroHash(1));
+        keysForCollision.add(new ZeroHash(2));
+        keysForCollision.add(new ZeroHash(3));
+        keysForCollision.add(new ZeroHash(4));
+        keysForCollision.add(new ZeroHash(5));
         // Подготавливаем массив объектов-значений
         values = new ArrayList<>(5);
         values.add(42);
         values.add(2L);
         values.add(null);
         values.add("");
-        values.add(new SimpleHashMap(1)); // Нет запрета, что хэш таблица не может хранить ссылку на хэш таблицу.
+        values.add(new SimpleHashMap(1));
         // "Случайный" порядок для имитации произвольного доступа к элементам в хранилище
         shuffle = new ArrayList<>(7);
         shuffle.add(3);
@@ -67,21 +81,18 @@ public class SimpleHashMapTest {
     }
 
 
-
     @Test
     public void testConstructorException() {
         try {
             new SimpleHashMap(-1);
             Assert.fail("Was able to create hash map with a negative bucket count");
-        }
-        catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException ignored) {
 
         }
         try {
-             new SimpleHashMap(0);
+            new SimpleHashMap(0);
             Assert.fail("Was able to create hash map with a zero bucket count");
-        }
-        catch (IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException ignored) {
 
         }
     }
@@ -89,19 +100,17 @@ public class SimpleHashMapTest {
     @Test
     public void testToString() {
         try {
-            HashMap hm =new SimpleHashMap(3);
-            hm.put("key1","val1");
-            hm.put("key2","val2");
-            hm.put("key3","val3");
-            hm.put("key4","val4");
-            hm.put("key5","val5");
+            HashMap hm = new SimpleHashMap(3);
+            hm.put("key1", "val1");
+            hm.put("key2", "val2");
+            hm.put("key3", "val3");
+            hm.put("key4", "val4");
+            hm.put("key5", "val5");
             System.out.println("hm.toString() = " + hm.toString());
-        }
-        catch (IllegalArgumentException ignored) {
-            Assert.fail("Was unable to create hash map with a given bucker count");
+        } catch (IllegalArgumentException ignored) {
+            Assert.fail("Was unable to create hash map with a given bucket count");
         }
     }
-
 
 
     @Test
@@ -169,9 +178,18 @@ public class SimpleHashMapTest {
     }
 
     @Test
+    public void testHashCode() {
+        int originalHash = hashmap.hashCode();
+        Assert.assertEquals("Хэш код изменяется без изменений в хэш таблице", originalHash, hashmap.hashCode());
+        hashmap.put(keys.get(0),values.get(0));
+        Assert.assertNotEquals("Хэш код НЕ изменяется после изменений в хэш таблице", originalHash, hashmap.hashCode());
+    }
+
+    @Test
     public void testEqualsEmpty() {
         HashMap otherHashMap = new SimpleHashMap();
         Assert.assertEquals("Пустые хэш таблицы не равны между собой", hashmap, otherHashMap);
+        Assert.assertEquals("Равные между собой пустые хэш таблицы имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -180,6 +198,7 @@ public class SimpleHashMapTest {
         hashmap.put(keys.get(0), values.get(0));
         otherHashMap.put(keys.get(0), values.get(0));
         Assert.assertEquals("Хэш таблицы c одним одинаковым элементом не равны между собой", hashmap, otherHashMap);
+        Assert.assertEquals("Равные между собой хэш таблицы с одним одинаковым элементом имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -193,7 +212,7 @@ public class SimpleHashMapTest {
             otherHashMap.put(keys.get(i), values.get(i));
         }
         Assert.assertEquals("Заполненные одними элементами в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
-
+        Assert.assertEquals("Равные между собой хэш таблицы, заполненные одними элементами в разном порядке, имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -207,7 +226,7 @@ public class SimpleHashMapTest {
             otherHashMap.put(keysForCollision.get(i), values.get(i));
         }
         Assert.assertEquals("Заполненные одними элементами с коллизиями в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
-
+        Assert.assertEquals("Равные между собой хэш таблицы, заполненные одними элементами с коллизиями в разном порядке, имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -309,7 +328,7 @@ public class SimpleHashMapTest {
             hashmap.put(keys.get(i), values.get(i));
         }
         int expectedSize = hashmap.size();
-        for (int i = 0; i< keys.size(); i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
+        for (int i = 0; i < keys.size(); i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
                 Assert.assertEquals("Hash map 'remove' returned incorrect value for a given key", values.get(i), hashmap.remove(keys.get(i)));
             } catch (KeyNotPresentException e) {
@@ -327,7 +346,7 @@ public class SimpleHashMapTest {
             hashmap.put(keysForCollision.get(i), values.get(i));
         }
         int expectedSize = hashmap.size();
-        for (int i = 0; i< keysForCollision.size(); i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
+        for (int i = 0; i < keysForCollision.size(); i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
                 Assert.assertEquals("Hash map 'remove' returned incorrect value for a given key", values.get(i), hashmap.remove(keysForCollision.get(i)));
             } catch (KeyNotPresentException e) {

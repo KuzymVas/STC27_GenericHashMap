@@ -52,8 +52,7 @@ public class SimpleHashMap implements HashMap {
          * @return - найденный узел или же null, если поиск не удался.
          */
         public ListNode findByKey(Object key) {
-            if ((this.key == null && key == null)
-                    || (this.key != null && this.key.equals(key))) {
+            if (Objects.equals(this.key, key)) {
                 return this;
             } else if (this.next == null) {
                 return null;
@@ -102,6 +101,20 @@ public class SimpleHashMap implements HashMap {
             StringBuilder strB = new StringBuilder();
             this.describeSelf(strB);
             return strB.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ListNode listNode = (ListNode) o;
+            return Objects.equals(key, listNode.key) &&
+                    Objects.equals(value, listNode.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key, value);
         }
 
         /**
@@ -178,15 +191,15 @@ public class SimpleHashMap implements HashMap {
     @Override
     public void put(Object key, Object value) {
         int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
-        if (buckets[keyHash] == null) {
+        if (buckets[keyHash] == null) { // Если корзина пуста
             buckets[keyHash] = new ListNode(key, value);
             size++;
         } else {
-            ListNode target = buckets[keyHash].findByKey(key);
-            if (target == null) {
+            ListNode target = buckets[keyHash].findByKey(key); // Иначе проверяем есть ли в ней данный ключ
+            if (target == null) { // Если ключа нет
                 buckets[keyHash] = buckets[keyHash].putInFront(key, value);
                 size++;
-            } else {
+            } else { // Если он есть
                 target.setValue(value);
             }
         }
@@ -238,13 +251,13 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder("SimpleHashMap{ buckets=");
+        StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
         for (int i = 0; i < buckets.length; i++) {
             strB.append("bucket[").append(i).append("]{");
             buckets[i].describeList(strB);
             strB.append((i < buckets.length - 1) ? "}," : "}");
         }
-        strB.append(", size=").append(size).append(" }");
+        strB.append(" }");
         return strB.toString();
     }
 
@@ -260,13 +273,10 @@ public class SimpleHashMap implements HashMap {
             while (curr != null) { // Пока не дошли до конца ведра
                 Object key = curr.getKey(); // Берем ключ пары
                 ListNode thatCurr = that.findByKey(key); // Ищем его в другом
-                // Если не нашли или знаение не совпало - не равны
-                if (thatCurr == null) {
+                // Если не нашли или значение не совпало - не равны
+                if ((thatCurr == null)
+                        || (!Objects.equals(curr.getValue(), thatCurr.getValue()))) {
                     return false;
-                }
-                if (!(curr.getValue() == null && thatCurr.getValue() == null)) {
-                    if (!curr.getValue().equals(thatCurr.getValue()))
-                        return false;
                 }
                 curr = curr.getNext(); // глубже идем в ведро
             }
@@ -276,8 +286,17 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(size);
-        result = 31 * result + Arrays.hashCode(buckets);
-        return result;
+        int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
+        int currElemNum = 0;
+        for (ListNode bucket : buckets) { // Перебираем ведра
+            ListNode currElem = bucket;
+            while (currElem != null) { // Перебираем элементы в ведре (если ведро пустое сразу идем дальше)
+                nodeHashes[currElemNum] = currElem.hashCode(); // Пишем хэш элемента в массив
+                currElemNum++;
+                currElem = currElem.getNext();
+            }
+        }
+        Arrays.sort(nodeHashes); // Сортируем хэши, чтобы обеспечить независимость от порядка элементов в ведрах
+        return Arrays.hashCode(nodeHashes); // Берем хэш сортированного массива хэшей.
     }
 }
