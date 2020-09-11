@@ -1,155 +1,12 @@
 package org.innopolis.kuzymvas.hashmap;
 
+import org.innopolis.kuzymvas.datastructures.KeyValuePair;
+import org.innopolis.kuzymvas.datastructures.ListNode;
+import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
+
 import java.util.Arrays;
-import java.util.Objects;
 
 public class SimpleHashMap implements HashMap {
-
-    private static class ListNode { // Класс узла списка, хранимого в каждой из корзин
-
-        // Пара ключ и значение
-        private final Object key;
-        private Object value;
-        // Ссылки для организации двусвязного списка
-        private ListNode next;
-        private ListNode prev;
-
-        /**
-         * Создает новый узел списка с заданной парой ключ-значение
-         *
-         * @param key   - ключ
-         * @param value - значение
-         */
-        public ListNode(Object key, Object value) {
-            this.key = key;
-            this.setValue(value);
-            this.next = null;
-            this.prev = null;
-        }
-
-        /**
-         * Создает новый узел списка с заданной парой ключ-значение и вставляет его перед данным
-         *
-         * @param key   - ключ
-         * @param value - значение
-         * @return - вновь созданный узел списка
-         */
-        public ListNode putInFront(Object key, Object value) {
-            ListNode newPrev = new ListNode(key, value);
-            newPrev.next = this;
-            if (this.prev != null) {
-                this.prev.next = newPrev;
-            }
-            this.prev = newPrev;
-            return newPrev;
-        }
-
-        /**
-         * Односторонний поиск внутри списка  по ключую Возвращает либо узел списка с заданным ключем,
-         * либо null, если такого узла не существует
-         *
-         * @param key - искомый ключ
-         * @return - найденный узел или же null, если поиск не удался.
-         */
-        public ListNode findByKey(Object key) {
-            if (Objects.equals(this.key, key)) {
-                return this;
-            } else if (this.next == null) {
-                return null;
-            } else return this.next.findByKey(key);
-        }
-
-        /**
-         * Удаляет данный узел из списка, замыкая его предшествующий и последующий узлы друг на друга.
-         */
-        public void removeSelf() {
-            if (this.prev != null) {
-                this.prev.next = this.next;
-            }
-            if (this.next != null) {
-                this.next.prev = this.prev;
-            }
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        /**
-         * Проверяет является ли данный узел первым в списке
-         *
-         * @return - true, если у узла нет предшественника, иначе false
-         */
-        public boolean isHead() {
-            return this.prev == null;
-        }
-
-        public Object getKey() {
-            return key;
-        }
-
-        public ListNode getNext() {
-            return next;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder strB = new StringBuilder();
-            this.describeSelf(strB);
-            return strB.toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ListNode listNode = (ListNode) o;
-            return Objects.equals(key, listNode.key) &&
-                    Objects.equals(value, listNode.value);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(key, value);
-        }
-
-        /**
-         * Добавляет описание(ключ и значение) этого элемента в StringBuilder
-         *
-         * @param strB - StringBuilder, в который нужно добавить описание
-         */
-        public void describeSelf(StringBuilder strB) {
-            strB.append("{key=");
-            if (key != null) {
-                strB.append(key.toString());
-            } else {
-                strB.append("null");
-            }
-            strB.append(", value=");
-            if (value != null) {
-                strB.append(value.toString());
-            } else {
-                strB.append("null");
-            }
-            strB.append("}");
-        }
-
-        /**
-         * Добавляет описание (ключ и значение) этого элемента и всех следующих за ним в StringBuilder
-         *
-         * @param strB - StringBuilder, в который следует добавить описания.
-         */
-        public void describeList(StringBuilder strB) {
-            describeSelf(strB);
-            if (this.next != null) {
-                this.next.describeList(strB);
-            }
-        }
-    }
 
     ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
     int size; // Число пар ключ-значение в хранилище
@@ -158,8 +15,7 @@ public class SimpleHashMap implements HashMap {
      * Создает хэш таблицу с 1024 корзинами
      */
     public SimpleHashMap() {
-        size = 0;
-        buckets = new ListNode[1024];
+        this(1024);
     }
 
     /**
@@ -175,32 +31,26 @@ public class SimpleHashMap implements HashMap {
     }
 
     /**
-     * Возвращает элемент из хранилища, содержащий пару с заданным ключем, или null, если ключ не найден
+     * Определяет номер корзины, соответствующей ключу
      *
-     * @param key - искомый ключ
-     * @return - элемент, хранящий пару с данным ключем или null, если ключ не найден
+     * @param key - ключ
+     * @return номер корзины в массиве коризн
      */
-    private ListNode findByKey(Object key) {
-        int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
-        if (buckets[keyHash] == null) {
-            return null;
-        }
-        return buckets[keyHash].findByKey(key);
+    private int getKeyBucket(Object key) {
+
+        return (key == null) ? 0 : key.hashCode() % buckets.length;
     }
+
 
     @Override
     public void put(Object key, Object value) {
-        int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
+        int keyHash = getKeyBucket(key);
         if (buckets[keyHash] == null) { // Если корзина пуста
             buckets[keyHash] = new ListNode(key, value);
             size++;
         } else {
-            ListNode target = buckets[keyHash].findByKey(key); // Иначе проверяем есть ли в ней данный ключ
-            if (target == null) { // Если ключа нет
-                buckets[keyHash] = buckets[keyHash].putInFront(key, value);
+            if (buckets[keyHash].putIntoList(key, value)) {
                 size++;
-            } else { // Если он есть
-                target.setValue(value);
             }
         }
 
@@ -208,40 +58,59 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public void replace(Object key, Object value) throws KeyNotPresentException {
-        ListNode target = findByKey(key);
-        if (target == null) {
-            throw new KeyNotPresentException("Key not found during replace attempt");
+        int keyHash = getKeyBucket(key);
+        try {
+            if (buckets[keyHash] != null) {
+                buckets[keyHash].replaceValue(key, value);
+            } else {
+                throw new KeyNotPresentException("Key not found in hash map during replace attempt. Key value: " + key);
+            }
+        } catch (KeyNotPresentException e) {
+            throw new KeyNotPresentException("Key not found in hash map during replace attempt. Key value: " + key);
         }
-        target.setValue(value);
     }
 
     @Override
     public Object get(Object key) throws KeyNotPresentException {
-        ListNode target = findByKey(key);
-        if (target == null) {
-            throw new KeyNotPresentException("Key not found during get attempt");
+        int keyHash = getKeyBucket(key);
+        try {
+            if (buckets[keyHash] != null) {
+                return buckets[keyHash].getValue(key);
+            } else {
+                throw new KeyNotPresentException("Key not found in hash map during get attempt. Key value: " + key);
+            }
+        } catch (KeyNotPresentException e) {
+            throw new KeyNotPresentException("Key not found in hash map during get attempt. Key value: " + key);
         }
-        return target.getValue();
     }
 
     @Override
     public Object remove(Object key) throws KeyNotPresentException {
-        int keyHash = (key == null) ? 0 : key.hashCode() % buckets.length;
-        ListNode target = (buckets[keyHash] == null) ? null : buckets[keyHash].findByKey(key);
-        if (target == null) {
-            throw new KeyNotPresentException("Key not found during get attempt");
+        int keyHash = getKeyBucket(key);
+        try {
+            if (buckets[keyHash] != null) {
+                Object value = buckets[keyHash].getValue(key);
+                buckets[keyHash] = buckets[keyHash].removeFromList(key);
+                size--;
+                return value;
+            } else {
+                throw new KeyNotPresentException("Key not found in hash map during remove attempt. Key value: " + key);
+            }
+        } catch (KeyNotPresentException e) {
+            throw new KeyNotPresentException("Key not found in hash map during remove attempt. Key value: " + key);
         }
-        if (target.isHead()) {
-            buckets[keyHash] = target.getNext();
-        }
-        target.removeSelf();
-        size--;
-        return target.getValue();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return (findByKey(key) != null);
+        int keyHash = getKeyBucket(key);
+        return buckets[keyHash] != null && buckets[keyHash].containsKey(key);
+    }
+
+    @Override
+    public boolean containsPair(KeyValuePair pair) {
+        int keyHash = getKeyBucket(pair.getKey());
+        return buckets[keyHash] != null && buckets[keyHash].containsPair(pair);
     }
 
     @Override
@@ -253,9 +122,11 @@ public class SimpleHashMap implements HashMap {
     public String toString() {
         StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
         for (int i = 0; i < buckets.length; i++) {
-            strB.append("bucket[").append(i).append("]{");
-            buckets[i].describeList(strB);
-            strB.append((i < buckets.length - 1) ? "}," : "}");
+            if (buckets[i] != null) {
+                strB.append("bucket[").append(i).append("]{");
+                buckets[i].describeList(strB);
+                strB.append((i < buckets.length - 1) ? "}," : "}");
+            }
         }
         strB.append(" }");
         return strB.toString();
@@ -268,32 +139,28 @@ public class SimpleHashMap implements HashMap {
         SimpleHashMap that = (SimpleHashMap) o;
         if (this.size != that.size) // разные размеры -> не равны
             return false;
-        for (ListNode bucket : buckets) { //  Для каждого ведра
-            ListNode curr = bucket;
-            while (curr != null) { // Пока не дошли до конца ведра
-                Object key = curr.getKey(); // Берем ключ пары
-                ListNode thatCurr = that.findByKey(key); // Ищем его в другом
-                // Если не нашли или значение не совпало - не равны
-                if ((thatCurr == null)
-                        || (!Objects.equals(curr.getValue(), thatCurr.getValue()))) {
-                    return false;
+        for (ListNode bucket: buckets) { // Из каждого ведра
+            if (bucket != null) {
+                KeyValuePair[] pairs = bucket.getKeyValuePairs();
+                for (KeyValuePair pair: pairs) { // Каждую пару, что в нем есть
+                    if (!that.containsPair(pair)) { // Ищем в другом
+                        return false;
+                    }
                 }
-                curr = curr.getNext(); // глубже идем в ведро
             }
         }
-        return true; // Если размеры совпали и каждая наша пара есть в другом -> равны
+        return true;// Если размеры совпали и каждая наша пара есть в другом -> равны
     }
 
     @Override
     public int hashCode() {
         int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
-        int currElemNum = 0;
+        int currPos = 0;
         for (ListNode bucket : buckets) { // Перебираем ведра
-            ListNode currElem = bucket;
-            while (currElem != null) { // Перебираем элементы в ведре (если ведро пустое сразу идем дальше)
-                nodeHashes[currElemNum] = currElem.hashCode(); // Пишем хэш элемента в массив
-                currElemNum++;
-                currElem = currElem.getNext();
+            if (bucket != null) {
+                int[] bucketHashes = bucket.getKeyValuePairsHashes(); // Получаем все хэши в ведре
+                System.arraycopy(bucketHashes, 0, nodeHashes, currPos, bucketHashes.length); // Пишем их в массив
+                currPos += bucketHashes.length;
             }
         }
         Arrays.sort(nodeHashes); // Сортируем хэши, чтобы обеспечить независимость от порядка элементов в ведрах

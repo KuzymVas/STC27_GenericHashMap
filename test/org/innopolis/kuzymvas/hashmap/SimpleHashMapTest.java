@@ -1,5 +1,6 @@
 package org.innopolis.kuzymvas.hashmap;
 
+import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -199,10 +200,15 @@ public class SimpleHashMapTest {
         otherHashMap.put(keys.get(0), values.get(0));
         Assert.assertEquals("Хэш таблицы c одним одинаковым элементом не равны между собой", hashmap, otherHashMap);
         Assert.assertEquals("Равные между собой хэш таблицы с одним одинаковым элементом имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
+
+        HashMap differentHashMap = new SimpleHashMap();
+        differentHashMap.put(keys.get(0), replaceValue);
+        Assert.assertNotEquals("Хэш таблицы c одним разным элементом  равны между собой", hashmap, differentHashMap);
+
     }
 
     @Test
-    public void testEqualsMultiple() {
+    public void testEqualsDifferentOrder() {
         HashMap otherHashMap = new SimpleHashMap();
 
         for (int i = 0; i < keys.size(); i++) {

@@ -1,6 +1,6 @@
 package org.innopolis.kuzymvas.datastructures;
 
-import org.innopolis.kuzymvas.hashmap.KeyNotPresentException;
+import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class ListNodeTest {
         System.out.println("Single node = " + node);
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i),values.get(i));
+            head.putIntoList(keys.get(i),values.get(i));
         }
         System.out.println("Entire list = " + head);
     }
@@ -72,6 +72,14 @@ public class ListNodeTest {
         } catch (KeyNotPresentException e) {
             Assert.fail("List 'getValue' method threw an exception.");
         }
+        KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
+        Assert.assertTrue("List doesn't contain pair, that was put in it", head.containsPair(pair));
+    }
+
+    @Test
+    public void testCreateSame() {
+        ListNode head = new ListNode(keys.get(0), values.get(0));
+        Assert.assertFalse("List put a same key into a new node instead of replacing old one during 'put'",head.putIntoList(keys.get(0), values.get(0)));
     }
 
 
@@ -79,7 +87,7 @@ public class ListNodeTest {
     public void testCreateMultiple() {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i),values.get(i));
+            Assert.assertTrue("List didn't  put a unique key into a new node during 'put' for a given key [" + i + "]",head.putIntoList(keys.get(i), values.get(i)));
         }
         for (Integer i : shuffle) {
             Assert.assertTrue("List  doesn't contain key[" + i + "], that was put in it", head.containsKey(keys.get(i)));
@@ -88,6 +96,9 @@ public class ListNodeTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("List 'getValue' method threw an exception at key-value [" + i + "].");
             }
+            KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
+            Assert.assertTrue("List doesn't contain pair, that was put in it", head.containsPair(pair));
+
         }
 
     }
@@ -97,8 +108,11 @@ public class ListNodeTest {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         int originalHash = head.hashCode();
         Assert.assertEquals("Хэш код изменяется без изменений в списке", originalHash, head.hashCode());
-        head = head.insertIntoList(keys.get(0),values.get(0));
+        head.putIntoList(keys.get(0), replaceValue);
         Assert.assertNotEquals("Хэш код НЕ изменяется после изменений в списке", originalHash, head.hashCode());
+        head.putIntoList(keys.get(1), values.get(1));
+        Assert.assertNotEquals("Хэш код НЕ изменяется после изменений в списке", originalHash, head.hashCode());
+
     }
 
     @Test
@@ -115,12 +129,12 @@ public class ListNodeTest {
         ListNode otherHead = new ListNode(keys.get(0), values.get(0));
 
         for (int i = 1; i < keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i), values.get(i));
+            head.putIntoList(keys.get(i), values.get(i));
         }
-        for (int i = 1; i < keys.size(); i++) {
-            otherHead = otherHead.insertIntoList(keys.get(i), values.get(i));
+        for (int i = keys.size() - 1; i >= 0; i--) {
+            otherHead.putIntoList(keys.get(i), values.get(i));
         }
-        Assert.assertEquals("Заполненные одними элементами списки не равны между собой", head, otherHead);
+        Assert.assertEquals("Заполненные одними элементами в разном порядке списки не равны между собой", head, otherHead);
         Assert.assertEquals("Равные между собой списки имеют разный хэш", head.hashCode(), otherHead.hashCode());
     }
 
@@ -144,7 +158,7 @@ public class ListNodeTest {
     public void testReplaceMultiple() {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i), values.get(i));
+            head.putIntoList(keys.get(i), values.get(i));
         }
         for (Integer i : shuffle) {
             try {
@@ -166,7 +180,7 @@ public class ListNodeTest {
     public void testReplaceNegative() {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i), values.get(i));
+            head.putIntoList(keys.get(i), values.get(i));
         }
         try {
             head.replaceValue(invalidKey, replaceValue);
@@ -199,7 +213,7 @@ public class ListNodeTest {
     public void testRemoveMultiple() {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i), values.get(i));
+            head.putIntoList(keys.get(i), values.get(i));
         }
         for (int i = 0; i < keys.size()-1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
@@ -221,7 +235,7 @@ public class ListNodeTest {
     public void testRemoveNegative() {
         ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            head = head.insertIntoList(keys.get(i), values.get(i));
+            head.putIntoList(keys.get(i), values.get(i));
         }
         try {
             head = head.removeFromList(invalidKey);

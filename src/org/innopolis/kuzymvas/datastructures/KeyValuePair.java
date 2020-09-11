@@ -21,6 +21,9 @@ public class KeyValuePair {
     }
 
 
+    public Object getKey() {
+        return key;
+    }
     public Object getValue() {
         return value;
     }

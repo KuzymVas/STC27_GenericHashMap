@@ -1,4 +1,4 @@
-package org.innopolis.kuzymvas.hashmap;
+package org.innopolis.kuzymvas.exceptions;
 
 public class KeyNotPresentException extends  Exception{
     /**
