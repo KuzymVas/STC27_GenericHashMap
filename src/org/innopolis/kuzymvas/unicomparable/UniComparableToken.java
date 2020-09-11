@@ -11,7 +11,7 @@ public class UniComparableToken implements  UniComparable{
     // Номер токена
     private final long[] uid = getUID();
     // Следующий номер свободный для выдачи
-    private static long[] nextUID = {Long.MAX_VALUE - 1};
+    private static long[] nextUID = {0};
     private static int writePos = 0; // Текущая позиция для записи в массиве номера.
 
     /**
