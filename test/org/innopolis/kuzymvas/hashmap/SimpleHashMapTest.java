@@ -1,5 +1,6 @@
 package org.innopolis.kuzymvas.hashmap;
 
+import org.innopolis.kuzymvas.datastructures.KeyValuePair;
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +21,7 @@ public class SimpleHashMapTest {
 
     private static class ZeroHash {
 
-        private  final  int val;
+        private final int val;
 
         public ZeroHash(int val) {
             this.val = val;
@@ -129,6 +130,9 @@ public class SimpleHashMapTest {
         } catch (KeyNotPresentException e) {
             Assert.fail("Hash map 'get' method threw an exception.");
         }
+        KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
+        Assert.assertTrue("Hash map doesn't contain pair, that was put in it", hashmap.containsPair(pair));
+
     }
 
     @Test
@@ -157,6 +161,8 @@ public class SimpleHashMapTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("Hash map 'get' method threw an exception at key-value [" + i + "].");
             }
+            KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
+            Assert.assertTrue("Hash map doesn't contain pair, that was put in it at key-value [" + i + "].", hashmap.containsPair(pair));
         }
 
     }
@@ -174,6 +180,8 @@ public class SimpleHashMapTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("Hash map 'get' method threw an exception at key-value [" + i + "].");
             }
+            KeyValuePair pair = new KeyValuePair(keysForCollision.get(i), values.get(i));
+            Assert.assertTrue("Hash map doesn't contain pair, that was put in it at key-value [" + i + "].", hashmap.containsPair(pair));
         }
 
     }
@@ -182,7 +190,7 @@ public class SimpleHashMapTest {
     public void testHashCode() {
         int originalHash = hashmap.hashCode();
         Assert.assertEquals("Хэш код изменяется без изменений в хэш таблице", originalHash, hashmap.hashCode());
-        hashmap.put(keys.get(0),values.get(0));
+        hashmap.put(keys.get(0), values.get(0));
         Assert.assertNotEquals("Хэш код НЕ изменяется после изменений в хэш таблице", originalHash, hashmap.hashCode());
     }
 
