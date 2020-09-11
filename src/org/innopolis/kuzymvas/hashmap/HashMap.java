@@ -1,5 +1,8 @@
 package org.innopolis.kuzymvas.hashmap;
 
+import org.innopolis.kuzymvas.datastructures.KeyValuePair;
+import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
+
 public interface HashMap {
 
     /**
@@ -39,6 +42,13 @@ public interface HashMap {
      * @return - true, если ключ найден в хранилище, false - в противном случае
      */
     boolean containsKey(Object key);
+
+    /**
+     * Проверяет наличие заданной пары ключ-значение в хранилище
+     * @param pair - проверяемая пара
+     * @return - true, если пара найдена в хранилище, false - в противном случае
+     */
+    boolean containsPair(KeyValuePair pair);
 
     /**
      * Возвращает количество пар ключ-значение, находящихся в хранилище

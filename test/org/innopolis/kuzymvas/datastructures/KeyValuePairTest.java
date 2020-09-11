@@ -15,7 +15,13 @@ public class KeyValuePairTest {
     @Test
     public void testGetValueTest() {
         KeyValuePair pair = new KeyValuePair("a","b");
-        Assert.assertEquals("Две одинаковые пары ключ-значение не равны","b",pair.getValue());
+        Assert.assertEquals("Пара вернуло не то значение, что было ей передано","b",pair.getValue());
+    }
+
+    @Test
+    public void testGetKeyTest() {
+        KeyValuePair pair = new KeyValuePair("a","b");
+        Assert.assertEquals("Пара вернула не тот ключ, что был ей передан","a",pair.getKey());
     }
 
     @Test
