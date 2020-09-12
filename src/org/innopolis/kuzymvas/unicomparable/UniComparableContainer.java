@@ -2,7 +2,9 @@ package org.innopolis.kuzymvas.unicomparable;
 
 import java.util.Objects;
 
-// Иммутабельный контейнер, хранящий ссылку на некий объект и сопоставленный ему токен сравнения
+/**
+ * Иммутабельный контейнер, хранящий ссылку на некий объект и сопоставленный ему токен сравнения
+ */
 public class UniComparableContainer implements UniComparable{
 
     private final UniComparableToken token; // хранимый токен

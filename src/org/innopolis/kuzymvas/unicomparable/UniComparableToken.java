@@ -38,6 +38,11 @@ public class UniComparableToken implements  UniComparable{
         return this;
     }
 
+    /**
+     * Проверяет ли является ли этот токен большим по отношению к данному
+     * @param other - данный токен
+     * @return - true, если этот токен больше данного, false в противном случае
+     */
     public boolean greaterThan(UniComparableToken other) {
         if (this.equals(other)) {
             return false;

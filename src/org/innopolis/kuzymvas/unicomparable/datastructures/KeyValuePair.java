@@ -24,7 +24,7 @@ public class KeyValuePair implements UniComparable {
         this.value = value;
     }
 
-    public Object getKey() {
+    public UniComparable getKey() {
         return key;
     }
     public Object getValue() {
