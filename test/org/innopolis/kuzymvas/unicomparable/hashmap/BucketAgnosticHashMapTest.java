@@ -81,7 +81,7 @@ public class BucketAgnosticHashMapTest {
         final String hashMapDescription = hashMap.toString();
         System.out.println("hashMapDescription = " + hashMapDescription);
         for (int i = 0; i < buckets.length; i++) {
-            Assert.assertNotEquals("HashMap didn't include one of bucket descriptions into its own", -1, hashMapDescription.lastIndexOf("bucket" + i));
+            Assert.assertNotEquals("Has mMap didn't include one of bucket descriptions into its own", -1, hashMapDescription.lastIndexOf("bucket" + i));
         }
     }
 

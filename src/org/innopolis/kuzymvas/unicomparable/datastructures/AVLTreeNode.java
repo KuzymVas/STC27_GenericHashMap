@@ -244,12 +244,12 @@ public class AVLTreeNode implements UniComparable {
         final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
-                throw new KeyNotPresentException("Specified to be replaced key do not exist on the tree");
+                throw new KeyNotPresentException("Specified for value replacement key do not exist on the tree");
             }
             right.replaceValue(key, value);
         } else if (comparison < 0) {
             if (left == null) {
-                throw new KeyNotPresentException("Specified to be replaced key do not exist on the tree");
+                throw new KeyNotPresentException("Specified for value replacement key do not exist on the tree");
             }
             left.replaceValue(key, value);
         } else {

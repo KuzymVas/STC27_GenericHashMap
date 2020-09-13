@@ -40,7 +40,7 @@ public class UniComparableContainer implements UniComparable{
     }
 
     /**
-     *  Хэш контейнера всегда совпадает  хэшом объекта внутри
+     *  Хэш контейнера всегда совпадает с хэшом объекта внутри
      * @return - хэш объекта внутри контейнера.
      */
     @Override
