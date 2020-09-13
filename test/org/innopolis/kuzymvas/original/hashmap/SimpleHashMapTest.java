@@ -1,6 +1,6 @@
-package org.innopolis.kuzymvas.hashmap;
+package org.innopolis.kuzymvas.original.hashmap;
 
-import org.innopolis.kuzymvas.datastructures.KeyValuePair;
+import org.innopolis.kuzymvas.original.datastructures.KeyValuePair;
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.junit.Assert;
 import org.junit.Before;

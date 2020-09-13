@@ -1,4 +1,4 @@
-package org.innopolis.kuzymvas.datastructures;
+package org.innopolis.kuzymvas.original.datastructures;
 
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 

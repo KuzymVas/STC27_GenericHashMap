@@ -1,7 +1,7 @@
-package org.innopolis.kuzymvas.hashmap;
+package org.innopolis.kuzymvas.original.hashmap;
 
-import org.innopolis.kuzymvas.datastructures.KeyValuePair;
-import org.innopolis.kuzymvas.datastructures.ListNode;
+import org.innopolis.kuzymvas.original.datastructures.KeyValuePair;
+import org.innopolis.kuzymvas.original.datastructures.ListNode;
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 
 import java.util.Arrays;

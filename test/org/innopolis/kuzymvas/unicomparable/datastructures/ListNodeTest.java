@@ -36,7 +36,7 @@ public class ListNodeTest {
         values.add(2L);
         values.add(null);
         values.add("");
-        values.add(new org.innopolis.kuzymvas.datastructures.ListNode("",""));
+        values.add(new org.innopolis.kuzymvas.original.datastructures.ListNode("",""));
         // "Случайный" порядок для имитации произвольного доступа к элементам в хранилище
         shuffle = new ArrayList<>(7);
         shuffle.add(3);
