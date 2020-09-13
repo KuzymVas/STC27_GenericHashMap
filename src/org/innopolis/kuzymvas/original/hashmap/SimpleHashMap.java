@@ -38,7 +38,7 @@ public class SimpleHashMap implements HashMap {
      */
     private int getKeyBucket(Object key) {
 
-        return (key == null) ? 0 : key.hashCode() % buckets.length;
+        return (key == null) ? 0 : Math.abs(key.hashCode()) % buckets.length;
     }
 
 

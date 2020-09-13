@@ -19,25 +19,27 @@ public class SimpleHashMapTest {
     private Object replaceValue;
     private Object invalidKey;
 
-    private static class ZeroHash {
+    private static class FixedHash {
 
         private final int val;
+        private final int hash;
 
-        public ZeroHash(int val) {
+        public FixedHash(int val, int hash) {
             this.val = val;
+            this.hash = hash;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            ZeroHash that = (ZeroHash) o;
+            FixedHash that = (FixedHash) o;
             return (this.val == that.val);
         }
 
         @Override
         public int hashCode() {
-            return 0;
+            return hash;
         }
     }
 
@@ -48,17 +50,17 @@ public class SimpleHashMapTest {
         // Подготавливаем массив объектов-ключей
         keys = new ArrayList<>(5);
         keys.add(1);
-        keys.add(2L);
+        keys.add(new FixedHash(1,-100));
         keys.add("Three");
         keys.add(4.0);
         keys.add(null);
         // Подготавливаем массив объектов-ключей, гарантированно вызывающих коллизии.
         keysForCollision = new ArrayList<>(5);
-        keysForCollision.add(new ZeroHash(1));
-        keysForCollision.add(new ZeroHash(2));
-        keysForCollision.add(new ZeroHash(3));
-        keysForCollision.add(new ZeroHash(4));
-        keysForCollision.add(new ZeroHash(5));
+        keysForCollision.add(new FixedHash(1,0));
+        keysForCollision.add(new FixedHash(2,0));
+        keysForCollision.add(new FixedHash(3,0));
+        keysForCollision.add(new FixedHash(4,0));
+        keysForCollision.add(new FixedHash(5,0));
         // Подготавливаем массив объектов-значений
         values = new ArrayList<>(5);
         values.add(42);
