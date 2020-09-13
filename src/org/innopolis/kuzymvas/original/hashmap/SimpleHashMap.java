@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class SimpleHashMap implements HashMap {
 
-    ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
+    final ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
     int size; // Число пар ключ-значение в хранилище
 
     /**
@@ -44,7 +44,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public void put(Object key, Object value) {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         if (buckets[keyHash] == null) { // Если корзина пуста
             buckets[keyHash] = new ListNode(key, value);
             size++;
@@ -58,7 +58,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public void replace(Object key, Object value) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
             if (buckets[keyHash] != null) {
                 buckets[keyHash].replaceValue(key, value);
@@ -72,7 +72,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public Object get(Object key) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
             if (buckets[keyHash] != null) {
                 return buckets[keyHash].getValue(key);
@@ -86,7 +86,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public Object remove(Object key) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
             if (buckets[keyHash] != null) {
                 Object value = buckets[keyHash].getValue(key);
@@ -103,13 +103,13 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public boolean containsKey(Object key) {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         return buckets[keyHash] != null && buckets[keyHash].containsKey(key);
     }
 
     @Override
     public boolean containsPair(KeyValuePair pair) {
-        int keyHash = getKeyBucket(pair.getKey());
+        final int keyHash = getKeyBucket(pair.getKey());
         return buckets[keyHash] != null && buckets[keyHash].containsPair(pair);
     }
 
@@ -120,7 +120,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
+        final StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] != null) {
                 strB.append("bucket[").append(i).append("]{");
@@ -135,9 +135,9 @@ public class SimpleHashMap implements HashMap {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SimpleHashMap that = (SimpleHashMap) o;
-        if (this.size != that.size) // разные размеры -> не равны
+        if (!(o instanceof  HashMap)) return false;
+        final HashMap that = (HashMap) o;
+        if (this.size != that.size()) // разные размеры -> не равны
             return false;
         for (ListNode bucket: buckets) { // Из каждого ведра
             if (bucket != null) {
@@ -154,7 +154,7 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public int hashCode() {
-        int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
+        final int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
         int currPos = 0;
         for (ListNode bucket : buckets) { // Перебираем ведра
             if (bucket != null) {

@@ -27,7 +27,7 @@ public class ListNode {
     /**
      * Если ключ отсутствует в списке, начинающемся с данного узла,
      * то вставляет в этот список новый узел, содержащий заданную пару ключ-значение
-     * Если заданный ключ уже есть в списке, то заменяет соответствуюзеее ему значение.
+     * Если заданный ключ уже есть в списке, то заменяет соответствующее ему значение.
      *
      * @param key   - ключ, хранимый в добавляемом узле списка
      * @param value - значение, хранимое в добавляемом узле списка
@@ -53,7 +53,7 @@ public class ListNode {
     }
 
     /**
-     * Удаляет из списка, начинающегося с данного узла с заданным ключем
+     * Удаляет из списка, начинающегося с данного узла  узел с заданным ключем
      *
      * @param key - ключ удаляемого узла
      * @return - новая голова списка.
@@ -168,7 +168,7 @@ public class ListNode {
      * @return - массив хэшей пар ключ-значение, минимум 1 хэш.
      */
     public int[] getKeyValuePairsHashes() {
-        KeyValuePair[] pairs = getKeyValuePairs();
+        final KeyValuePair[] pairs = getKeyValuePairs();
         int[] hashes = new int[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
             hashes[i] = pairs[i].hashCode();
@@ -192,7 +192,7 @@ public class ListNode {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder();
+        final StringBuilder strB = new StringBuilder();
         describeList(strB);
         return "List{" + strB + "}";
     }
@@ -201,7 +201,7 @@ public class ListNode {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ListNode listNode = (ListNode) o;
+        final ListNode listNode = (ListNode) o;
         if (this.height != listNode.height) { // Если у списков разная длина - не равны
             return false;
         }
@@ -215,7 +215,7 @@ public class ListNode {
      * @return - true, если все элементы данного списка входят в другой, false в обратном случае
      */
     private boolean isSubListOf(ListNode listNode) {
-        KeyValuePair[] pairs = getKeyValuePairs();
+        final KeyValuePair[] pairs = getKeyValuePairs();
         for(KeyValuePair pair: pairs) {
            if (!listNode.containsPair(pair)) {
                return false;

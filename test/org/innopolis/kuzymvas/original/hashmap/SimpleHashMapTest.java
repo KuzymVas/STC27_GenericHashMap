@@ -191,16 +191,16 @@ public class SimpleHashMapTest {
     @Test
     public void testHashCode() {
         int originalHash = hashmap.hashCode();
-        Assert.assertEquals("Хэш код изменяется без изменений в хэш таблице", originalHash, hashmap.hashCode());
+        Assert.assertEquals("Hash code changed without changes to the hash map", originalHash, hashmap.hashCode());
         hashmap.put(keys.get(0), values.get(0));
-        Assert.assertNotEquals("Хэш код НЕ изменяется после изменений в хэш таблице", originalHash, hashmap.hashCode());
+        Assert.assertNotEquals("Hash code didn't change after changes to the hash map", originalHash, hashmap.hashCode());
     }
 
     @Test
     public void testEqualsEmpty() {
         HashMap otherHashMap = new SimpleHashMap();
-        Assert.assertEquals("Пустые хэш таблицы не равны между собой", hashmap, otherHashMap);
-        Assert.assertEquals("Равные между собой пустые хэш таблицы имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
+        Assert.assertEquals("Empty hash maps are not equal", hashmap, otherHashMap);
+        Assert.assertEquals("Equal empty hash maps have a different hashes", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -208,12 +208,12 @@ public class SimpleHashMapTest {
         HashMap otherHashMap = new SimpleHashMap();
         hashmap.put(keys.get(0), values.get(0));
         otherHashMap.put(keys.get(0), values.get(0));
-        Assert.assertEquals("Хэш таблицы c одним одинаковым элементом не равны между собой", hashmap, otherHashMap);
-        Assert.assertEquals("Равные между собой хэш таблицы с одним одинаковым элементом имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
+        Assert.assertEquals("Hash maps with the same one element are not equal", hashmap, otherHashMap);
+        Assert.assertEquals("Equal hash maps with same one element have a different hashes", hashmap.hashCode(), otherHashMap.hashCode());
 
         HashMap differentHashMap = new SimpleHashMap();
         differentHashMap.put(keys.get(0), replaceValue);
-        Assert.assertNotEquals("Хэш таблицы c одним разным элементом  равны между собой", hashmap, differentHashMap);
+        Assert.assertNotEquals("Hash maps with the different single element are equal", hashmap, differentHashMap);
 
     }
 
@@ -227,8 +227,8 @@ public class SimpleHashMapTest {
         for (int i = keys.size() - 1; i > -1; i--) {
             otherHashMap.put(keys.get(i), values.get(i));
         }
-        Assert.assertEquals("Заполненные одними элементами в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
-        Assert.assertEquals("Равные между собой хэш таблицы, заполненные одними элементами в разном порядке, имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
+        Assert.assertEquals("Hash maps with same elements in a different orders are not equal", hashmap, otherHashMap);
+        Assert.assertEquals("Equal hash maps have a different hashes", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
@@ -241,8 +241,8 @@ public class SimpleHashMapTest {
         for (int i = keysForCollision.size() - 1; i > -1; i--) {
             otherHashMap.put(keysForCollision.get(i), values.get(i));
         }
-        Assert.assertEquals("Заполненные одними элементами с коллизиями в разном порядке хэш таблицы не равны между собой", hashmap, otherHashMap);
-        Assert.assertEquals("Равные между собой хэш таблицы, заполненные одними элементами с коллизиями в разном порядке, имеют разный хэш", hashmap.hashCode(), otherHashMap.hashCode());
+        Assert.assertEquals("Hash maps with same elements with collisions in a different orders are not equal", hashmap, otherHashMap);
+        Assert.assertEquals("Equal hash maps have a different hashes", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
