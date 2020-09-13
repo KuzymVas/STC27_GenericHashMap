@@ -190,7 +190,7 @@ public class SimpleHashMapTest {
 
     @Test
     public void testHashCode() {
-        int originalHash = hashmap.hashCode();
+        final int originalHash = hashmap.hashCode();
         Assert.assertEquals("Hash code changed without changes to the hash map", originalHash, hashmap.hashCode());
         hashmap.put(keys.get(0), values.get(0));
         Assert.assertNotEquals("Hash code didn't change after changes to the hash map", originalHash, hashmap.hashCode());
@@ -198,14 +198,14 @@ public class SimpleHashMapTest {
 
     @Test
     public void testEqualsEmpty() {
-        HashMap otherHashMap = new SimpleHashMap();
+        final HashMap otherHashMap = new SimpleHashMap();
         Assert.assertEquals("Empty hash maps are not equal", hashmap, otherHashMap);
         Assert.assertEquals("Equal empty hash maps have a different hashes", hashmap.hashCode(), otherHashMap.hashCode());
     }
 
     @Test
     public void testEqualsSingle() {
-        HashMap otherHashMap = new SimpleHashMap();
+        final HashMap otherHashMap = new SimpleHashMap();
         hashmap.put(keys.get(0), values.get(0));
         otherHashMap.put(keys.get(0), values.get(0));
         Assert.assertEquals("Hash maps with the same one element are not equal", hashmap, otherHashMap);
@@ -219,7 +219,7 @@ public class SimpleHashMapTest {
 
     @Test
     public void testEqualsDifferentOrder() {
-        HashMap otherHashMap = new SimpleHashMap();
+        final HashMap otherHashMap = new SimpleHashMap();
 
         for (int i = 0; i < keys.size(); i++) {
             hashmap.put(keys.get(i), values.get(i));
@@ -233,7 +233,7 @@ public class SimpleHashMapTest {
 
     @Test
     public void testEqualsCollision() {
-        HashMap otherHashMap = new SimpleHashMap();
+        final HashMap otherHashMap = new SimpleHashMap();
 
         for (int i = 0; i < keysForCollision.size(); i++) {
             hashmap.put(keysForCollision.get(i), values.get(i));
