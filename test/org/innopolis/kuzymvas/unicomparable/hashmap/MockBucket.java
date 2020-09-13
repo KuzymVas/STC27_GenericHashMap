@@ -23,7 +23,7 @@ public class MockBucket implements  Bucket{
     }
 
     @Override
-    public void replace(Object key, Object value) throws KeyNotPresentException {
+    public void replace(UniComparable key, Object value) throws KeyNotPresentException {
         usedReplace = true;
         if (throwExceptions) {
             throw new KeyNotPresentException("Mock Exception");

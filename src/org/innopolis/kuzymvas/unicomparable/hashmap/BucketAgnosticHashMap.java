@@ -13,6 +13,7 @@ public class BucketAgnosticHashMap implements HashMap {
 
     /**
      * Создает хэш таблицу с 1024 корзинами
+     *
      * @param factory - фабрика, которая снабдит таблицу нужным типом корзин. Не может быть null
      */
     public BucketAgnosticHashMap(BucketFactory factory) {
@@ -22,11 +23,11 @@ public class BucketAgnosticHashMap implements HashMap {
     /**
      * Создаем хэш таблицу с заданным положительным числом корзин
      *
-     * @param factory - фабрика, которая снабдит таблицу нужным типом корзин. Не может быть null
+     * @param factory      - фабрика, которая снабдит таблицу нужным типом корзин. Не может быть null
      * @param bucketNumber - число корзин. Должно быть строго больше 0
      * @throws IllegalArgumentException - выбрасывается, если число корзин меньше, либо равно нулю.
      */
-    public BucketAgnosticHashMap(BucketFactory factory,int bucketNumber) throws IllegalArgumentException {
+    public BucketAgnosticHashMap(BucketFactory factory, int bucketNumber) throws IllegalArgumentException {
         size = 0;
         if (factory == null) throw new IllegalArgumentException("Bucket factory can't be null");
         if (bucketNumber <= 0) throw new IllegalArgumentException("Hash map can't have 0 or less buckets");
@@ -50,14 +51,6 @@ public class BucketAgnosticHashMap implements HashMap {
         int keyHash = getKeyBucket(key);
         if (buckets[keyHash].put(key, value))
             size++;
-        /*if (buckets[keyHash] == null) { // Если корзина пуста
-            buckets[keyHash] = new ListNode(key, value);
-            size++;
-        } else {
-            if (buckets[keyHash].putIntoList(key, value)) {
-                size++;
-            }
-        }*/
 
     }
 
@@ -125,26 +118,38 @@ public class BucketAgnosticHashMap implements HashMap {
         return strB.toString();
     }
 
+    /**
+     * Проверяет эквиваленность данной хэш таблицы объекту.
+     * Для эквивалентности объект должен реализовывать интерфейс unicomparable.hashmap.HashMap
+     * и содержать в точности те же пары ключ-значение, что и эта таблица.
+     * Внутренняя стрктура объекта не важна для эквивалентности.
+     * @param o - объект по отношению к которому проверяется эквивалетность
+     * @return - true, если таблица и объект эквивалентны, false в противном случае
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BucketAgnosticHashMap that = (BucketAgnosticHashMap) o;
-        if (this.size != that.size) // разные размеры -> не равны
+        if (!(o instanceof HashMap)) return false;
+        HashMap that = (HashMap) o;
+        if (this.size != that.size()) // разные размеры -> не равны
             return false;
-        for (Bucket bucket: buckets) { // Из каждого ведра
-            if (bucket != null) {
-                KeyValuePair[] pairs = bucket.getKeyValuePairs();
-                for (KeyValuePair pair: pairs) { // Каждую пару, что в нем есть
-                    if (!that.containsPair(pair)) { // Ищем в другом
-                        return false;
-                    }
+        for (Bucket bucket : buckets) { // Из каждого ведра
+            KeyValuePair[] pairs = bucket.getKeyValuePairs();
+            for (KeyValuePair pair : pairs) { // Каждую пару, что в нем есть
+                if (!that.containsPair(pair)) { // Ищем в другом
+                    return false;
                 }
             }
         }
         return true;// Если размеры совпали и каждая наша пара есть в другом -> равны
     }
 
+    /**
+     * Возвращает хэш код для данной таблицы.
+     * Ее хэш код зависит только от содержащихся в ней пар ключ-значение
+     * и не зависит от порядка их добавления или типа корзин.
+     * @return - хэш код таблицы
+     */
     @Override
     public int hashCode() {
         int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
