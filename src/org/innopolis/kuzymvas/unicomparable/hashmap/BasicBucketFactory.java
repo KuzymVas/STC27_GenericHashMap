@@ -12,7 +12,7 @@ public class BasicBucketFactory implements  BucketFactory {
 
     private final BucketType targetType;
 
-    BasicBucketFactory(BucketType targetType) {
+    public BasicBucketFactory(BucketType targetType) {
         this.targetType = targetType;
     }
 

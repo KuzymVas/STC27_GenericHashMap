@@ -20,7 +20,7 @@ public class AVLTreeBucket implements Bucket{
             return true;
         }
         else {
-            boolean retVal = root.containsKey(key);
+            boolean retVal = !(root.containsKey(key));
             root.insert(key, value);
             return  retVal;
         }

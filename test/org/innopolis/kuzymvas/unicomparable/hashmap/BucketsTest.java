@@ -76,7 +76,7 @@ public class BucketsTest {
 
     @Test
     public void testPutSingle() {
-        bucket.put(keys.get(0), values.get(0));
+        Assert.assertTrue("Empty bucket "+bucketName+" somehow didn't create a new node when put into",bucket.put(keys.get(0), values.get(0)));
         Assert.assertTrue("Bucket "+bucketName+" doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
         try {
             Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key", values.get(0), bucket.get(keys.get(0)));
@@ -90,8 +90,8 @@ public class BucketsTest {
 
     @Test
     public void testPutSame() {
-        bucket.put(keys.get(0), values.get(0));
-        bucket.put(keys.get(0), replaceValue);
+        Assert.assertTrue("Empty bucket "+bucketName+" somehow didn't create a new node when put into",bucket.put(keys.get(0), values.get(0)));
+        Assert.assertFalse("Bucket "+bucketName+" did create a new node when a same key was put into it",bucket.put(keys.get(0), replaceValue));
         Assert.assertTrue("Bucket "+bucketName+" doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
         try {
             Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key", replaceValue, bucket.get(keys.get(0)));
@@ -103,7 +103,7 @@ public class BucketsTest {
     @Test
     public void testPutMultiple() {
         for (int i = 0; i < keys.size(); i++) {
-            bucket.put(keys.get(i), values.get(i));
+            Assert.assertTrue("Bucket "+bucketName+" didn't create a new node for key, that wasn't put into it before",bucket.put(keys.get(i), values.get(i)));
         }
         for (Integer i : shuffle) {
             Assert.assertTrue("Bucket "+bucketName+" doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
