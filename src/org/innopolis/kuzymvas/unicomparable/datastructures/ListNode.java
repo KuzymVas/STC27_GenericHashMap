@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 public class ListNode {
 
-    KeyValuePair pair;
+    private KeyValuePair pair;
     private ListNode next; // Ссылка для организации двусвязного списка
     private long height; // Высота списка
 
@@ -156,12 +156,12 @@ public class ListNode {
      */
     public KeyValuePair[] getKeyValuePairs() {
         if (next != null) {
-            KeyValuePair[] nextPairs = next.getKeyValuePairs();
-            KeyValuePair[] pairs = Arrays.copyOf(nextPairs, nextPairs.length + 1);
+            final KeyValuePair[] nextPairs = next.getKeyValuePairs();
+            final KeyValuePair[] pairs = Arrays.copyOf(nextPairs, nextPairs.length + 1);
             pairs[pairs.length - 1] = pair;
             return pairs;
         } else {
-            KeyValuePair[] pairs = new KeyValuePair[1];
+            final KeyValuePair[] pairs = new KeyValuePair[1];
             pairs[0] = pair;
             return pairs;
         }
@@ -173,8 +173,8 @@ public class ListNode {
      * @return - массив хэшей пар ключ-значение, минимум 1 хэш.
      */
     public int[] getKeyValuePairsHashes() {
-        KeyValuePair[] pairs = getKeyValuePairs();
-        int[] hashes = new int[pairs.length];
+        final KeyValuePair[] pairs = getKeyValuePairs();
+        final int[] hashes = new int[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
             hashes[i] = pairs[i].hashCode();
         }
@@ -198,7 +198,7 @@ public class ListNode {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder();
+        final StringBuilder strB = new StringBuilder();
         describeList(strB);
         return "List{" + strB + "}";
     }
@@ -207,7 +207,7 @@ public class ListNode {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ListNode listNode = (ListNode) o;
+        final ListNode listNode = (ListNode) o;
         if (this.height != listNode.height) { // Если у списков разная длина - не равны
             return false;
         }
@@ -221,7 +221,7 @@ public class ListNode {
      * @return - true, если все элементы данного списка входят в другой, false в обратном случае
      */
     private boolean isSubListOf(ListNode listNode) {
-        KeyValuePair[] pairs = getKeyValuePairs();
+        final KeyValuePair[] pairs = getKeyValuePairs();
         for(KeyValuePair pair: pairs) {
            if (!listNode.containsPair(pair)) {
                return false;
@@ -233,7 +233,7 @@ public class ListNode {
 
     @Override
     public int hashCode() {
-        int[] hashes = getKeyValuePairsHashes();
+        final int[] hashes = getKeyValuePairsHashes();
         Arrays.sort(hashes);
         return Arrays.hashCode(hashes);
     }

@@ -54,7 +54,7 @@ public class KeyValuePair implements UniComparable {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder();
+        final StringBuilder strB = new StringBuilder();
         describeSelf(strB);
         return "KeyValuePair" + strB;
     }
@@ -63,7 +63,7 @@ public class KeyValuePair implements UniComparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        KeyValuePair that = (KeyValuePair) o;
+        final KeyValuePair that = (KeyValuePair) o;
         return Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);
     }

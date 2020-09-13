@@ -34,7 +34,7 @@ public class UniComparableContainer implements UniComparable{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UniComparableContainer that = (UniComparableContainer) o;
+        final UniComparableContainer that = (UniComparableContainer) o;
         return token.equals(that.token) &&
                 Objects.equals(value, that.value);
     }

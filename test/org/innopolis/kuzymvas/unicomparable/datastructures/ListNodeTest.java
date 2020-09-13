@@ -55,9 +55,9 @@ public class ListNodeTest {
 
     @Test
     public void testToStringTest() {
-        ListNode node = new ListNode(new UniComparableContainer("42"),null);
+        final ListNode node = new ListNode(new UniComparableContainer("42"),null);
         System.out.println("Single node = " + node);
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
             head.putIntoList(keys.get(i),values.get(i));
         }
@@ -67,27 +67,27 @@ public class ListNodeTest {
 
     @Test
     public void testCreateSingle() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         Assert.assertTrue("List doesn't contain key, that was put in it", head.containsKey(keys.get(0)));
         try {
             Assert.assertEquals("List returned incorrect value for a given key", values.get(0), head.getValue(keys.get(0)));
         } catch (KeyNotPresentException e) {
             Assert.fail("List 'getValue' method threw an exception.");
         }
-        KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
+        final KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
         Assert.assertTrue("List doesn't contain pair, that was put in it", head.containsPair(pair));
     }
 
     @Test
     public void testCreateSame() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         Assert.assertFalse("List put a same key into a new node instead of replacing old one during 'put'",head.putIntoList(keys.get(0), values.get(0)));
     }
 
 
     @Test
     public void testCreateMultiple() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
             Assert.assertTrue("List didn't  put a unique key into a new node during 'put' for a given key [" + i + "]",head.putIntoList(keys.get(i), values.get(i)));
         }
@@ -98,7 +98,7 @@ public class ListNodeTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("List 'getValue' method threw an exception at key-value [" + i + "].");
             }
-            KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
+            final KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
             Assert.assertTrue("List doesn't contain pair, that was put in it", head.containsPair(pair));
 
         }
@@ -107,8 +107,8 @@ public class ListNodeTest {
 
     @Test
     public void testHashCode() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
-        int originalHash = head.hashCode();
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
+        final int originalHash = head.hashCode();
         Assert.assertEquals("Hash code changed without changes to the list", originalHash, head.hashCode());
         head.putIntoList(keys.get(0), replaceValue);
         Assert.assertNotEquals("Hash code didn't change after changes to the list", originalHash, head.hashCode());
@@ -119,16 +119,16 @@ public class ListNodeTest {
 
     @Test
     public void testEqualsSingle() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
-        ListNode otherHead = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode otherHead = new ListNode(keys.get(0), values.get(0));
         Assert.assertEquals("Lists with th same one element are not equal", head, otherHead);
         Assert.assertEquals("Equal lists with same one element have a different hashes", head.hashCode(), otherHead.hashCode());
     }
 
     @Test
     public void testEqualsMultiple() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
-        ListNode otherHead = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode otherHead = new ListNode(keys.get(0), values.get(0));
 
         for (int i = 1; i < keys.size(); i++) {
             head.putIntoList(keys.get(i), values.get(i));
@@ -142,7 +142,7 @@ public class ListNodeTest {
 
     @Test
     public void testReplaceSingle() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         try {
             head.replaceValue(keys.get(0), replaceValue);
         } catch (KeyNotPresentException e) {
@@ -158,7 +158,7 @@ public class ListNodeTest {
 
     @Test
     public void testReplaceMultiple() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
             head.putIntoList(keys.get(i), values.get(i));
         }
@@ -180,7 +180,7 @@ public class ListNodeTest {
 
     @Test
     public void testReplaceNegative() {
-        ListNode head = new ListNode(keys.get(0), values.get(0));
+        final ListNode head = new ListNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
             head.putIntoList(keys.get(i), values.get(i));
         }

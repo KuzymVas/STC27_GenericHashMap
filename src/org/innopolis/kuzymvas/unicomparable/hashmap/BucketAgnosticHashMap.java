@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class BucketAgnosticHashMap implements HashMap {
 
-    Bucket[] buckets; // Массив корзин для каждого из возможных значений хэша
+    final Bucket[] buckets; // Массив корзин для каждого из возможных значений хэша
     int size; // Число пар ключ-значение в хранилище
 
     /**
@@ -48,7 +48,7 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public void put(UniComparable key, Object value) {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         if (buckets[keyHash].put(key, value))
             size++;
 
@@ -56,7 +56,7 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public void replace(UniComparable key, Object value) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
             buckets[keyHash].replace(key, value);
         } catch (KeyNotPresentException e) {
@@ -66,7 +66,7 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public Object get(UniComparable key) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
             return buckets[keyHash].get(key);
         } catch (KeyNotPresentException e) {
@@ -76,9 +76,9 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public Object remove(UniComparable key) throws KeyNotPresentException {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         try {
-            Object value = buckets[keyHash].get(key);
+            final Object value = buckets[keyHash].get(key);
             buckets[keyHash].remove(key);
             size--;
             return value;
@@ -89,13 +89,13 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public boolean containsKey(UniComparable key) {
-        int keyHash = getKeyBucket(key);
+        final int keyHash = getKeyBucket(key);
         return buckets[keyHash].containsKey(key);
     }
 
     @Override
     public boolean containsPair(KeyValuePair pair) {
-        int keyHash = getKeyBucket(pair.getKey());
+        final int keyHash = getKeyBucket(pair.getKey());
         return buckets[keyHash] != null && buckets[keyHash].containsPair(pair);
     }
 
@@ -106,7 +106,7 @@ public class BucketAgnosticHashMap implements HashMap {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
+        final StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] != null) {
                 strB.append("bucket[").append(i).append("]{");
@@ -130,7 +130,7 @@ public class BucketAgnosticHashMap implements HashMap {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof HashMap)) return false;
-        HashMap that = (HashMap) o;
+        final HashMap that = (HashMap) o;
         if (this.size != that.size()) // разные размеры -> не равны
             return false;
         for (Bucket bucket : buckets) { // Из каждого ведра
@@ -152,11 +152,11 @@ public class BucketAgnosticHashMap implements HashMap {
      */
     @Override
     public int hashCode() {
-        int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
+        final int[] nodeHashes = new int[size]; // Массив хэшей по числу элементов
         int currPos = 0;
         for (Bucket bucket : buckets) { // Перебираем ведра
             if (bucket != null) {
-                int[] bucketHashes = bucket.getKeyValuePairsHashes(); // Получаем все хэши в ведре
+                final int[] bucketHashes = bucket.getKeyValuePairsHashes(); // Получаем все хэши в ведре
                 System.arraycopy(bucketHashes, 0, nodeHashes, currPos, bucketHashes.length); // Пишем их в массив
                 currPos += bucketHashes.length;
             }

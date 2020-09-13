@@ -27,7 +27,7 @@ public class BasicBucketFactory implements  BucketFactory {
 
     @Override
     public Bucket[] createBuckets(int bucketNumber) {
-        Bucket[] buckets = new Bucket[bucketNumber];
+        final Bucket[] buckets = new Bucket[bucketNumber];
         for (int i = 0; i < bucketNumber; i++) {
             buckets[i] = createBucket();
         }

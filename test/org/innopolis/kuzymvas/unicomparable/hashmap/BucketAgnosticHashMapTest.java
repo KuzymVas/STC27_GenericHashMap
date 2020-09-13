@@ -78,7 +78,7 @@ public class BucketAgnosticHashMapTest {
         for (int i = 0; i < buckets.length; i++) {
             buckets[i].description = "bucket" + i;
         }
-        String hashMapDescription = hashMap.toString();
+        final String hashMapDescription = hashMap.toString();
         System.out.println("hashMapDescription = " + hashMapDescription);
         for (int i = 0; i < buckets.length; i++) {
             Assert.assertNotEquals("HashMap didn't include one of bucket descriptions into its own", -1, hashMapDescription.lastIndexOf("bucket" + i));
@@ -310,9 +310,9 @@ public class BucketAgnosticHashMapTest {
 
     @Test
     public void testEquals() {
-        MockBucketFactory factory = new MockBucketFactory();
-        BucketAgnosticHashMap otherHashMap = new BucketAgnosticHashMap(factory, 10);
-        MockBucket[] otherBuckets = factory.getBackdoorToBuckets();
+        final MockBucketFactory factory = new MockBucketFactory();
+        final BucketAgnosticHashMap otherHashMap = new BucketAgnosticHashMap(factory, 10);
+        final MockBucket[] otherBuckets = factory.getBackdoorToBuckets();
 
         hashMap.put(firstSameHashKey, null);
         hashMap.put(firstSameHashKey, null);

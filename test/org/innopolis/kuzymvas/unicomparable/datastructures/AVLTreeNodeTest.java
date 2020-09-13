@@ -16,8 +16,8 @@ public class AVLTreeNodeTest {
     private ArrayList<UniComparable> keys;
     private ArrayList<Object> values;
     private ArrayList<Integer> shuffle;
-    private  Object replaceValue;
-    private  UniComparable invalidKey;
+    private Object replaceValue;
+    private UniComparable invalidKey;
 
 
 
@@ -54,33 +54,34 @@ public class AVLTreeNodeTest {
 
     @Test
     public void testToStringTest() {
-        AVLTreeNode node = new AVLTreeNode(keys.get(0), values.get(0));
+        final AVLTreeNode node = new AVLTreeNode(keys.get(0), values.get(0));
         System.out.println("Single node = " + node);
-        AVLTreeNode head = new AVLTreeNode(keys.get(0), values.get(0));
+        AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
-            head.insert(keys.get(i),values.get(i));
+            root = root.insert(keys.get(i),values.get(i));
         }
-        System.out.println("Entire tree = " + head);
+        System.out.println("Entire tree = " + root);
     }
 
 
     @Test
     public void testCreateSingle() {
-        AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
+        final AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         Assert.assertTrue("Tree doesn't contain key, that was put in it", root.containsKey(keys.get(0)));
         try {
             Assert.assertEquals("Tree returned incorrect value for a given key", values.get(0), root.getValue(keys.get(0)));
         } catch (KeyNotPresentException e) {
             Assert.fail("Tree 'getValue' method threw an exception.");
         }
-        KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
+        final KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
         Assert.assertTrue("Tree doesn't contain pair, that was put in it", root.containsPair(pair));
     }
 
     @Test
     public void testCreateSame() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
-        Assert.assertEquals("Tree put a same key into a new node instead of replacing old one during 'put'",values.get(0),root.insert(keys.get(0), replaceValue));
+        root = root.insert(keys.get(0), values.get(0));
+        Assert.assertEquals("Tree put a same key into a new node instead of replacing old one during 'put'", 1, root.getHeight());
     }
 
 
@@ -88,7 +89,7 @@ public class AVLTreeNodeTest {
     public void testCreateMultiple() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i<keys.size(); i++) {
-            assertNull("Tree didn't  put a unique key into a new node during 'put' for a given key [" + i + "]", root.insert(keys.get(i), values.get(i)));
+            root = root.insert(keys.get(i), values.get(i));
         }
         for (Integer i : shuffle) {
             Assert.assertTrue("List  doesn't contain key[" + i + "], that was put in it", root.containsKey(keys.get(i)));
@@ -97,7 +98,7 @@ public class AVLTreeNodeTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("List 'getValue' method threw an exception at key-value [" + i + "].");
             }
-            KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
+            final KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
             Assert.assertTrue("List doesn't contain pair, that was put in it", root.containsPair(pair));
 
         }
@@ -107,19 +108,19 @@ public class AVLTreeNodeTest {
     @Test
     public void testHashCode() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
-        int originalHash = root.hashCode();
+        final int originalHash = root.hashCode();
         Assert.assertEquals("Hash code value changed without change in a tree.", originalHash, root.hashCode());
-        root.insert(keys.get(0), replaceValue);
+        root = root.insert(keys.get(0), replaceValue);
         Assert.assertNotEquals("Hash code value didn't change with change in a tree", originalHash, root.hashCode());
-        root.insert(keys.get(1), values.get(1));
+        root = root.insert(keys.get(1), values.get(1));
         Assert.assertNotEquals("Hash code value didn't change with change in a tree", originalHash, root.hashCode());
 
     }
 
     @Test
     public void testEqualsSingle() {
-        AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
-        AVLTreeNode otherRoot = new AVLTreeNode(keys.get(0), values.get(0));
+        final AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
+        final AVLTreeNode otherRoot = new AVLTreeNode(keys.get(0), values.get(0));
         Assert.assertEquals("Same one node trees are not equal", root, otherRoot);
         Assert.assertEquals("Equal one node trees have a different hash value", root.hashCode(), otherRoot.hashCode());
     }
@@ -130,10 +131,10 @@ public class AVLTreeNodeTest {
         AVLTreeNode otherRoot = new AVLTreeNode(keys.get(0), values.get(0));
 
         for (int i = 1; i < keys.size(); i++) {
-            root.insert(keys.get(i), values.get(i));
+            root = root.insert(keys.get(i), values.get(i));
         }
         for (int i = keys.size() - 1; i >= 0; i--) {
-            otherRoot.insert(keys.get(i), values.get(i));
+            otherRoot = otherRoot.insert(keys.get(i), values.get(i));
         }
         Assert.assertEquals("Filled with same key-value pairs in different order trees are not equal", root, otherRoot);
         Assert.assertEquals("Equal trees have a different hash values", root.hashCode(), otherRoot.hashCode());
@@ -141,7 +142,7 @@ public class AVLTreeNodeTest {
 
     @Test
     public void testReplaceSingle() {
-        AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
+        final AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         try {
             root.replaceValue(keys.get(0), replaceValue);
         } catch (KeyNotPresentException e) {
@@ -159,7 +160,7 @@ public class AVLTreeNodeTest {
     public void testReplaceMultiple() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            root.insert(keys.get(i), values.get(i));
+            root = root.insert(keys.get(i), values.get(i));
         }
         for (Integer i : shuffle) {
             try {
@@ -181,7 +182,7 @@ public class AVLTreeNodeTest {
     public void testReplaceNegative() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            root.insert(keys.get(i), values.get(i));
+            root = root.insert(keys.get(i), values.get(i));
         }
         try {
             root.replaceValue(invalidKey, replaceValue);
@@ -214,7 +215,7 @@ public class AVLTreeNodeTest {
     public void testRemoveMultiple() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            root.insert(keys.get(i), values.get(i));
+            root = root.insert(keys.get(i), values.get(i));
         }
         for (int i = 0; i < keys.size()-1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
@@ -236,7 +237,7 @@ public class AVLTreeNodeTest {
     public void testRemoveNegative() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 1; i < keys.size(); i++) {
-            root.insert(keys.get(i), values.get(i));
+            root = root.insert(keys.get(i), values.get(i));
         }
         try {
             root = root.remove(invalidKey);
@@ -261,15 +262,15 @@ public class AVLTreeNodeTest {
         UniComparableContainer[] seqKeys = new UniComparableContainer[1000];
         for (int i = 0; i < 1000; i++) {
             seqKeys[i] = new UniComparableContainer(i);
-            root.insert(seqKeys[i], null);
-            Assert.assertTrue("Tree with " + i + " height is too high for AVL tree.",root.getHeight() <= 1.45*Math.log(i+3));
-            Assert.assertTrue("Tree with " + i + " nodes is unbalanced.",root.getMaxAbsTreeBalance() < 2);
+            root = root.insert(seqKeys[i], null);
+            Assert.assertTrue("Tree with " + (i+2) + " elements and height "+root.getHeight()+" is too high for AVL tree.",root.getHeight() <= 1.45*Math.log(i+4)/Math.log(2));
+            Assert.assertTrue("Tree with " + (i+2) + " nodes is unbalanced.",root.getMaxAbsTreeBalance() < 2);
         }
         AVLTreeNode rootReverse = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 0; i < 1000; i++) {
-            rootReverse.insert(seqKeys[1000 - i - 1], null);
-            Assert.assertTrue("Tree with " + i + " height is too high for AVL tree.",root.getHeight() <= 1.45*Math.log(i+3));
-            Assert.assertTrue("Tree with " + i + " nodes is unbalanced.",root.getMaxAbsTreeBalance() < 2);
+            rootReverse = rootReverse.insert(seqKeys[1000 - i - 1], null);
+            Assert.assertTrue("Tree with " + (i+2) + " elements and height "+rootReverse.getHeight()+" is too high for AVL tree.",rootReverse.getHeight() <= 1.45*Math.log(i+4)/Math.log(2));
+            Assert.assertTrue("Tree with " + (i+2) + " nodes is unbalanced.",rootReverse.getMaxAbsTreeBalance() < 2);
         }
 
     }

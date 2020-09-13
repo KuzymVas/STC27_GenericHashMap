@@ -18,15 +18,15 @@ public class Main {
         System.out.println("Выполняется сравнение реализаций HashMap на односвязном списке и на АВЛ дереве:");
         System.out.println("Будут созданы две хэш таблицы с тремя корзинами каждая для обеспечения коллизий\n" +
                 "(без коллизий внутренняя реализация не важна)");
-        HashMap listMap = new BucketAgnosticHashMap(
+        final HashMap listMap = new BucketAgnosticHashMap(
                 new BasicBucketFactory(BasicBucketFactory.BucketType.LIST),
                 3);
-        HashMap treeMap = new BucketAgnosticHashMap(
+        final HashMap treeMap = new BucketAgnosticHashMap(
                 new BasicBucketFactory(BasicBucketFactory.BucketType.AVL_TREE),
                 3);
         System.out.println("В каждую будут добавлены по 10 элементов с ключами числами int 1-10 и \n" +
                 "значениями строками 'один'-'десять'. Ключи и значения скомбинированы случайным образом");
-        List<UniComparable> keys = new ArrayList<>();
+        final List<UniComparable> keys = new ArrayList<>();
         keys.add(new UniComparableContainer(1));
         keys.add(new UniComparableContainer(2));
         keys.add(new UniComparableContainer(3));
@@ -37,7 +37,7 @@ public class Main {
         keys.add(new UniComparableContainer(8));
         keys.add(new UniComparableContainer(9));
         keys.add(new UniComparableContainer(10));
-        List<String> values = new ArrayList<>(Arrays.asList("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять"));
+        final List<String> values = new ArrayList<>(Arrays.asList("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять"));
         Collections.shuffle(keys);
         Collections.shuffle(values);
         for (int i = 0; i < keys.size(); i++) {

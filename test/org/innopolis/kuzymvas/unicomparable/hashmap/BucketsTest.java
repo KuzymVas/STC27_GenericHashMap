@@ -224,21 +224,21 @@ public class BucketsTest {
 
     @Test
     public void testKeyValuePairFunctions() {
-        KeyValuePair[] pairs = new KeyValuePair[keys.size()];
-        int[] hashes = new int[keys.size()] ;
+        final KeyValuePair[] pairs = new KeyValuePair[keys.size()];
+        final int[] hashes = new int[keys.size()] ;
         for (int i = 0; i < keys.size(); i++) {
             pairs[i] = new KeyValuePair(keys.get(i), values.get(i));
             hashes[i] = pairs[i].hashCode();
             bucket.put(keys.get(i), values.get(i));
             Assert.assertTrue("Bucket "+bucketName+" doesn't contain key-value pair, that was put into it", bucket.containsPair(pairs[i]));
         }
-        KeyValuePair[] pairsFromBucket = bucket.getKeyValuePairs();
+        final KeyValuePair[] pairsFromBucket = bucket.getKeyValuePairs();
         Assert.assertEquals("List of pairs inside the bucket "+bucketName+" has a different length than amount of pairs that were put into it", pairs.length, pairsFromBucket.length);
         List<KeyValuePair> listOfPairsFromBucket = Arrays.asList(pairsFromBucket);
         for (int i = 0; i < pairs.length; i++) {
             Assert.assertTrue("List of pairs inside the bucket "+bucketName+" does not contain pair ["+i+"], that was put into it",listOfPairsFromBucket.contains(pairs[i]));
         }
-        int[] hashesFromBucket = bucket.getKeyValuePairsHashes();
+        final int[] hashesFromBucket = bucket.getKeyValuePairsHashes();
         Assert.assertEquals("List of hashes inside the bucket "+bucketName+" has a different length than amount of pairs that were put into it", hashes.length, hashesFromBucket.length);
         // Нельзя использовать asList с массивом примитивных типов.
         for (int i = 0; i < hashes.length; i++) {

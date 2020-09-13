@@ -44,7 +44,7 @@ public class AVLTreeNode implements UniComparable {
      * @return - высота правого поддерева >=0
      */
     private int getRightHeight() {
-        return (left == null) ? 0 : left.getHeight();
+        return (right == null) ? 0 : right.getHeight();
     }
 
     /**
@@ -84,7 +84,7 @@ public class AVLTreeNode implements UniComparable {
      */
     private static AVLTreeNode rebalance(AVLTreeNode node) {
         node.updateHeight();
-        int balance = node.getBalance();
+        final int balance = node.getBalance();
         if (balance > 1) {
             if (node.right.getRightHeight() <= node.right.getLeftHeight()) {
                 node.right = rotateRight(node.right);
@@ -158,34 +158,26 @@ public class AVLTreeNode implements UniComparable {
      * Если заданный ключ уже есть в дереве, то заменяет соответствуюзеее ему значение.
      * @param key   - ключ, добавляемый в дерево
      * @param value - значение, добавляемое в дерево
-     * @return - старое значение узла дерева, которое было заменео новым при добавлении
-     *          или null, если был добавленый новый узел
+     * @return - новый корень дерева
      */
-    public Object insert(UniComparable key, Object value) {
-        int comparison = UniComparator.compare(this, key);
+    public AVLTreeNode insert(UniComparable key, Object value) {
+        final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
                 right = new AVLTreeNode(key, value);
-                return null;
             } else {
-                Object retVal = right.insert(key, value);
-                right = rebalance(right);
-                return retVal;
+                right = right.insert(key, value);
             }
         } else if (comparison < 0) {
             if (left == null) {
                 left = new AVLTreeNode(key, value);
-                return null;
             } else {
-                Object retVal = left.insert(key, value);
-                left = rebalance(left);
-                return retVal;
+                left = left.insert(key, value);
             }
         } else {
-            Object retVal = this.pair.getValue();
             this.pair = new KeyValuePair(key, value);
-            return retVal;
         }
+        return rebalance(this);
     }
 
     /**
@@ -196,7 +188,7 @@ public class AVLTreeNode implements UniComparable {
      * @throws KeyNotPresentException - выбрасывается, если в дереве нет узла с заданным ключем.
      */
     public AVLTreeNode remove(UniComparable key) throws KeyNotPresentException {
-        int comparison = UniComparator.compare(this, key);
+        final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
                 throw new KeyNotPresentException("Specified to be removed key do not exist on the tree");
@@ -225,7 +217,7 @@ public class AVLTreeNode implements UniComparable {
      * @throws KeyNotPresentException - выбрасывается, если в списке нет узла с заданным ключем.
      */
     public Object getValue(UniComparable key) throws KeyNotPresentException {
-        int comparison = UniComparator.compare(this, key);
+        final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
                 throw new KeyNotPresentException("Specified to be retrieved key do not exist on the tree");
@@ -249,7 +241,7 @@ public class AVLTreeNode implements UniComparable {
      * @throws KeyNotPresentException - выбрасывается, если в дереве нет узла с заданным ключем.
      */
     public void replaceValue(UniComparable key, Object value) throws KeyNotPresentException {
-        int comparison = UniComparator.compare(this, key);
+        final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
                 throw new KeyNotPresentException("Specified to be replaced key do not exist on the tree");
@@ -272,7 +264,7 @@ public class AVLTreeNode implements UniComparable {
      * @return - true, если ключ хранится в одном из узлов дерева, false в противном случае
      */
     public boolean containsKey(UniComparable key) {
-        int comparison = UniComparator.compare(this, key);
+        final int comparison = UniComparator.compare(this, key);
         if (comparison > 0) {
             if (right == null) {
                 return false;
@@ -295,7 +287,7 @@ public class AVLTreeNode implements UniComparable {
      * @return - true, если пара хранится в одном из узлов дерева, false в противном случае
      */
     public boolean containsPair(KeyValuePair pair) {
-        int comparison = UniComparator.compare(this, pair);
+        final int comparison = UniComparator.compare(this, pair);
         if (comparison > 0) {
             if (right == null) {
                 return false;
@@ -338,8 +330,8 @@ public class AVLTreeNode implements UniComparable {
      * @return - массив хэшей пар ключ-значение, минимум 1 хэш.
      */
     public int[] getKeyValuePairsHashes() {
-        KeyValuePair[] pairs = getKeyValuePairs();
-        int[] hashes = new int[pairs.length];
+        final KeyValuePair[] pairs = getKeyValuePairs();
+        final int[] hashes = new int[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
             hashes[i] = pairs[i].hashCode();
         }
@@ -363,7 +355,7 @@ public class AVLTreeNode implements UniComparable {
 
     @Override
     public String toString() {
-        StringBuilder strB = new StringBuilder();
+        final StringBuilder strB = new StringBuilder();
         describeTree(strB);
         return "AVLTree{" + strB + "}";
     }
@@ -372,7 +364,7 @@ public class AVLTreeNode implements UniComparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AVLTreeNode that = (AVLTreeNode) o;
+        final AVLTreeNode that = (AVLTreeNode) o;
         if (height != that.height)
             return  false;
         return this.isSubTreeOf(that) && that.isSubTreeOf(this);
@@ -385,7 +377,7 @@ public class AVLTreeNode implements UniComparable {
      * @return - true, если все элементы данного дерева входят в другое, false в обратном случае
      */
     private boolean isSubTreeOf(AVLTreeNode treeNode) {
-        KeyValuePair[] pairs = getKeyValuePairs();
+        final KeyValuePair[] pairs = getKeyValuePairs();
         for(KeyValuePair pair: pairs) {
             if (!treeNode.containsPair(pair)) {
                 return false;
@@ -396,7 +388,7 @@ public class AVLTreeNode implements UniComparable {
 
     @Override
     public int hashCode() {
-        int[] hashes = getKeyValuePairsHashes();
+        final int[] hashes = getKeyValuePairsHashes();
         Arrays.sort(hashes);
         return Arrays.hashCode(hashes);
     }
