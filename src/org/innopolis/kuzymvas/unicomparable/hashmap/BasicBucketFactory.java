@@ -6,7 +6,8 @@ public class BasicBucketFactory implements  BucketFactory {
      * Перечисление возможных типов корзин, производимых фабрикой
      */
     public enum  BucketType {
-        AVL_TREE // Коризна, основанная на АВЛ дереве
+        AVL_TREE, // Коризна, основанная на АВЛ дереве
+        LIST // Корзина, основанная на односвязном списке
     }
 
     private final BucketType targetType;
@@ -19,6 +20,7 @@ public class BasicBucketFactory implements  BucketFactory {
     public Bucket createBucket() {
         switch (targetType) {
             case AVL_TREE: return new AVLTreeBucket();
+            case LIST: return new ListBucket();
             default: return null;
         }
     }
