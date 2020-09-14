@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class ListNode {
 
     KeyValuePair pair;
-    private ListNode next; // Ссылка для организации двусвязного списка
+    private ListNode next; // Ссылка для организации односвязного списка
     private long height; // Высота списка
 
     /**
@@ -199,8 +199,12 @@ public class ListNode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final ListNode listNode = (ListNode) o;
         if (this.height != listNode.height) { // Если у списков разная длина - не равны
             return false;
@@ -208,27 +212,27 @@ public class ListNode {
         return isSubListOf(listNode); // Если длина одинакова, то вхождение равносильно эквивалентности.
     }
 
-    /**
-     * Проверяет является ли логически данный список подмножеством другого:
-     * т. е. входят ли все элементы данного списка и в другой тоже.
-     * @param listNode - голова другого списка
-     * @return - true, если все элементы данного списка входят в другой, false в обратном случае
-     */
-    private boolean isSubListOf(ListNode listNode) {
-        final KeyValuePair[] pairs = getKeyValuePairs();
-        for(KeyValuePair pair: pairs) {
-           if (!listNode.containsPair(pair)) {
-               return false;
-           }
-        }
-        return true;
-    }
-
-
     @Override
     public int hashCode() {
         int[] hashes = getKeyValuePairsHashes();
         Arrays.sort(hashes);
         return Arrays.hashCode(hashes);
+    }
+
+    /**
+     * Проверяет является ли логически данный список подмножеством другого:
+     * т. е. входят ли все элементы данного списка и в другой тоже.
+     *
+     * @param listNode - голова другого списка
+     * @return - true, если все элементы данного списка входят в другой, false в обратном случае
+     */
+    private boolean isSubListOf(ListNode listNode) {
+        final KeyValuePair[] pairs = getKeyValuePairs();
+        for (KeyValuePair pair : pairs) {
+            if (!listNode.containsPair(pair)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

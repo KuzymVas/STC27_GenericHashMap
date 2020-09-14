@@ -22,8 +22,12 @@ public class BucketAgnosticHashMapTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             FixedHash that = (FixedHash) o;
             return (this.val == that.val);
         }
@@ -288,7 +292,7 @@ public class BucketAgnosticHashMapTest {
 
     @Test
     public void testExceptions() {
-        for(MockBucket bucket: buckets) {
+        for (MockBucket bucket : buckets) {
             bucket.throwExceptions = true;
         }
         try {
@@ -297,7 +301,7 @@ public class BucketAgnosticHashMapTest {
         } catch (KeyNotPresentException ignore) {
         }
         try {
-            hashMap.replace(firstSameHashKey,null);
+            hashMap.replace(firstSameHashKey, null);
             Assert.fail("Hash map hide an exception thrown during replace attempt");
         } catch (KeyNotPresentException ignore) {
         }
@@ -326,10 +330,10 @@ public class BucketAgnosticHashMapTest {
 
         Assert.assertNotEquals("Same size hash maps which doesn't contain each other elements are equal", hashMap, otherHashMap);
 
-        for(MockBucket bucket: buckets) {
+        for (MockBucket bucket : buckets) {
             bucket.returnOnContainsRequests = true;
         }
-        for(MockBucket bucket: otherBuckets) {
+        for (MockBucket bucket : otherBuckets) {
             bucket.returnOnContainsRequests = true;
         }
         Assert.assertEquals("Same size hash maps which does contain each other elements are not equal", hashMap, otherHashMap);
@@ -342,8 +346,8 @@ public class BucketAgnosticHashMapTest {
     @Test
     public void testHash() {
         // Чтобы хэш таблица ожидала два значения из корзин, имитируем, что положили в нее два элемента
-        hashMap.put(firstSameHashKey,null);
-        hashMap.put(firstSameHashKey,null);
+        hashMap.put(firstSameHashKey, null);
+        hashMap.put(firstSameHashKey, null);
 
         buckets[0].hasHash = true;
         buckets[1].hasHash = true;

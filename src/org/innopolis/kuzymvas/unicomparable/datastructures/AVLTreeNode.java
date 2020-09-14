@@ -21,7 +21,8 @@ public class AVLTreeNode implements UniComparable {
 
     /**
      * Создает новый узел дерева (и  корень дерева из одного узла) с заданной парой ключ-значение
-     * @param key - ключ, хранимый в узле дерева
+     *
+     * @param key   - ключ, хранимый в узле дерева
      * @param value - значение, хранимое в узле дерева
      */
     public AVLTreeNode(UniComparable key, Object value) {
@@ -32,103 +33,8 @@ public class AVLTreeNode implements UniComparable {
     }
 
     /**
-     * Возвращает высоту левого поддерва
-     * @return - высота левого поддерева >=0
-     */
-    private int getLeftHeight() {
-        return (left == null) ? 0 : left.getHeight();
-    }
-
-    /**
-     * Возвращает высоту правого поддерва
-     * @return - высота правого поддерева >=0
-     */
-    private int getRightHeight() {
-        return (right == null) ? 0 : right.getHeight();
-    }
-
-    /**
-     * Выполняет левый поворот дерева, начинающегося с данной вершины.
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после поворота
-     */
-    private static AVLTreeNode rotateLeft(AVLTreeNode node) {
-        AVLTreeNode rightNode = node.right;
-        AVLTreeNode leftRightNode = rightNode.left;
-        rightNode.left = node;
-        node.right = leftRightNode;
-        node.updateHeight();
-        rightNode.updateHeight();
-        return rightNode;
-    }
-
-    /**
-     * Выполняет правый поворот дерева, начинающегося с данной вершины.
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после поворота
-     */
-    private static AVLTreeNode rotateRight(AVLTreeNode node) {
-        AVLTreeNode leftNode = node.left;
-        AVLTreeNode rightLeftNode = leftNode.right;
-        leftNode.right = node;
-        node.left = rightLeftNode;
-        node.updateHeight();
-        leftNode.updateHeight();
-        return leftNode;
-    }
-
-    /**
-     * Выполняет ребалансировку дерева, начинающегося с данной вершины.
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после реабалансировки
-     */
-    private static AVLTreeNode rebalance(AVLTreeNode node) {
-        node.updateHeight();
-        final int balance = node.getBalance();
-        if (balance > 1) {
-            if (node.right.getRightHeight() <= node.right.getLeftHeight()) {
-                node.right = rotateRight(node.right);
-            }
-            node = rotateLeft(node);
-
-        } else if (balance < -1) {
-            if (node.left.getLeftHeight() <= node.left.getRightHeight()) {
-                node.left = rotateLeft(node.left);
-            }
-            node = rotateRight(node);
-        }
-        return node;
-    }
-
-    /**
-     * Перерасчитывает высоту узла в дереве, исходя из высот его поддеревьев
-     */
-    private void updateHeight() {
-        height = 1 + Math.max(getLeftHeight(), getRightHeight());
-    }
-
-    /**
-     * Вычисляет сбалансированность узла - разность высот его поддеревьев
-     * @return - показатель сбалансированности узла.
-     */
-    private int getBalance() {
-        return getRightHeight() - getLeftHeight();
-    }
-
-    /**
-     *  Возвращает самый левый лист в в дереве, начинающейся с этой вершины
-     * @return - крайний левый лист в дереве, начинающемся с этой вершины
-     */
-    private AVLTreeNode getLeftmostChild() {
-        if (this.left == null) {
-            return this;
-        } else {
-            return left.getLeftmostChild();
-        }
-    }
-
-    /**
      * Возвращает максимальный по модулю показатель сбалансированности среди узлов дерева
+     *
      * @return -  максимальный по модулю показатель сбалансированноси в дереве
      */
     public int getMaxAbsTreeBalance() {
@@ -156,6 +62,7 @@ public class AVLTreeNode implements UniComparable {
      * Если ключ отсутствует в дереве, начинающемся с данного узла,
      * то вставляет в это дерево новый узел, содержащий заданную пару ключ-значение
      * Если заданный ключ уже есть в дереве, то заменяет соответствуюзеее ему значение.
+     *
      * @param key   - ключ, добавляемый в дерево
      * @param value - значение, добавляемое в дерево
      * @return - новый корень дерева
@@ -362,28 +269,17 @@ public class AVLTreeNode implements UniComparable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final AVLTreeNode that = (AVLTreeNode) o;
-        if (height != that.height)
-            return  false;
-        return this.isSubTreeOf(that) && that.isSubTreeOf(this);
-    }
-
-    /**
-     * Проверяет является ли логически данное дерево подмножеством другого:
-     * т. е. входят ли все элементы данного дерева и в другое тоже.
-     * @param treeNode - корень другого деревого
-     * @return - true, если все элементы данного дерева входят в другое, false в обратном случае
-     */
-    private boolean isSubTreeOf(AVLTreeNode treeNode) {
-        final KeyValuePair[] pairs = getKeyValuePairs();
-        for(KeyValuePair pair: pairs) {
-            if (!treeNode.containsPair(pair)) {
-                return false;
-            }
+        if (this == o) {
+            return true;
         }
-        return true;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AVLTreeNode that = (AVLTreeNode) o;
+        if (height != that.height) {
+            return false;
+        }
+        return this.isSubTreeOf(that) && that.isSubTreeOf(this);
     }
 
     @Override
@@ -396,5 +292,125 @@ public class AVLTreeNode implements UniComparable {
     @Override
     public UniComparableToken getComparableToken() {
         return pair.getComparableToken();
+    }
+
+    /**
+     * Проверяет является ли логически данное дерево подмножеством другого:
+     * т. е. входят ли все элементы данного дерева и в другое тоже.
+     *
+     * @param treeNode - корень другого деревого
+     * @return - true, если все элементы данного дерева входят в другое, false в обратном случае
+     */
+    private boolean isSubTreeOf(AVLTreeNode treeNode) {
+        final KeyValuePair[] pairs = getKeyValuePairs();
+        for (KeyValuePair pair : pairs) {
+            if (!treeNode.containsPair(pair)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Возвращает высоту левого поддерва
+     *
+     * @return - высота левого поддерева >=0
+     */
+    private int getLeftHeight() {
+        return (left == null) ? 0 : left.getHeight();
+    }
+
+    /**
+     * Возвращает высоту правого поддерва
+     *
+     * @return - высота правого поддерева >=0
+     */
+    private int getRightHeight() {
+        return (right == null) ? 0 : right.getHeight();
+    }
+
+    /**
+     * Выполняет левый поворот дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после поворота
+     */
+    private static AVLTreeNode rotateLeft(AVLTreeNode node) {
+        AVLTreeNode rightNode = node.right;
+        AVLTreeNode leftRightNode = rightNode.left;
+        rightNode.left = node;
+        node.right = leftRightNode;
+        node.updateHeight();
+        rightNode.updateHeight();
+        return rightNode;
+    }
+
+    /**
+     * Выполняет правый поворот дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после поворота
+     */
+    private static AVLTreeNode rotateRight(AVLTreeNode node) {
+        AVLTreeNode leftNode = node.left;
+        AVLTreeNode rightLeftNode = leftNode.right;
+        leftNode.right = node;
+        node.left = rightLeftNode;
+        node.updateHeight();
+        leftNode.updateHeight();
+        return leftNode;
+    }
+
+    /**
+     * Выполняет ребалансировку дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после реабалансировки
+     */
+    private static AVLTreeNode rebalance(AVLTreeNode node) {
+        node.updateHeight();
+        final int balance = node.getBalance();
+        if (balance > 1) {
+            if (node.right.getRightHeight() <= node.right.getLeftHeight()) {
+                node.right = rotateRight(node.right);
+            }
+            node = rotateLeft(node);
+
+        } else if (balance < -1) {
+            if (node.left.getLeftHeight() <= node.left.getRightHeight()) {
+                node.left = rotateLeft(node.left);
+            }
+            node = rotateRight(node);
+        }
+        return node;
+    }
+
+    /**
+     * Перерасчитывает высоту узла в дереве, исходя из высот его поддеревьев
+     */
+    private void updateHeight() {
+        height = 1 + Math.max(getLeftHeight(), getRightHeight());
+    }
+
+    /**
+     * Вычисляет сбалансированность узла - разность высот его поддеревьев
+     *
+     * @return - показатель сбалансированности узла.
+     */
+    private int getBalance() {
+        return getRightHeight() - getLeftHeight();
+    }
+
+    /**
+     * Возвращает самый левый лист в в дереве, начинающейся с этой вершины
+     *
+     * @return - крайний левый лист в дереве, начинающемся с этой вершины
+     */
+    private AVLTreeNode getLeftmostChild() {
+        if (this.left == null) {
+            return this;
+        } else {
+            return left.getLeftmostChild();
+        }
     }
 }

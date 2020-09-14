@@ -9,8 +9,8 @@ public class UniComparableContainerTest {
     public void ContainerTest() {
         final Object a = "test";
         final UniComparableContainer container = new UniComparableContainer(a);
-        Assert.assertEquals("Container returned different value from what was put in it",a,container.getValue());
-        Assert.assertEquals("Container hash code did not correspond to that of its value",a.hashCode(),container.getValue().hashCode());
+        Assert.assertEquals("Container returned different value from what was put in it", a, container.getValue());
+        Assert.assertEquals("Container hash code did not correspond to that of its value", a.hashCode(), container.getValue().hashCode());
     }
 
     @Test
@@ -20,9 +20,9 @@ public class UniComparableContainerTest {
         final UniComparableContainer containerA = new UniComparableContainer(a);
         final UniComparableContainer containerA2 = new UniComparableContainer(a);
         final UniComparableContainer containerB = new UniComparableContainer(b);
-        Assert.assertNotEquals("Containers  of different values were equal",containerA, containerB);
-        Assert.assertNotEquals("Different containers of same value were equal",containerA, containerA2);
-        Assert.assertEquals("Container wasn't equal to self",containerA, containerA);
+        Assert.assertNotEquals("Containers  of different values were equal", containerA, containerB);
+        Assert.assertNotEquals("Different containers of same value were equal", containerA, containerA2);
+        Assert.assertEquals("Container wasn't equal to self", containerA, containerA);
     }
 
     @Test

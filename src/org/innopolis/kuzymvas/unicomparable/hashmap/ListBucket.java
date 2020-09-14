@@ -5,9 +5,9 @@ import org.innopolis.kuzymvas.unicomparable.UniComparable;
 import org.innopolis.kuzymvas.unicomparable.datastructures.KeyValuePair;
 import org.innopolis.kuzymvas.unicomparable.datastructures.ListNode;
 
-public class ListBucket implements Bucket{
+public class ListBucket implements Bucket {
 
-    ListNode head;
+    private ListNode head;
 
     public ListBucket() {
         head = null;
@@ -18,8 +18,7 @@ public class ListBucket implements Bucket{
         if (head == null) {
             head = new ListNode(key, value);
             return true;
-        }
-        else {
+        } else {
             return head.putIntoList(key, value);
         }
     }
@@ -51,7 +50,7 @@ public class ListBucket implements Bucket{
     @Override
     public boolean containsKey(UniComparable key) {
         if (head == null) {
-            return  false;
+            return false;
         }
         return head.containsKey(key);
     }
@@ -59,7 +58,7 @@ public class ListBucket implements Bucket{
     @Override
     public boolean containsPair(KeyValuePair pair) {
         if (head == null) {
-            return  false;
+            return false;
         }
         return head.containsPair(pair);
     }

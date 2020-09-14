@@ -7,12 +7,13 @@ import java.util.Objects;
  */
 public class KeyValuePair {
 
-    final private Object key;
-    final private Object value;
+    private final Object key;
+    private final Object value;
 
     /**
-     *  Создает новый иммутабельный объект ключ-значение
-     * @param key - ключ нового объекта
+     * Создает новый иммутабельный объект ключ-значение
+     *
+     * @param key   - ключ нового объекта
      * @param value - значение нового объекта
      */
     public KeyValuePair(Object key, Object value) {
@@ -24,12 +25,14 @@ public class KeyValuePair {
     public Object getKey() {
         return key;
     }
+
     public Object getValue() {
         return value;
     }
 
     /**
-     *  Проверяет совпадает ли данный ключ с ключом этого объекта
+     * Проверяет совпадает ли данный ключ с ключом этого объекта
+     *
      * @param key - проверяемый ключ
      * @return - true, если ключи совпадают, false в противном случае
      */
@@ -39,6 +42,7 @@ public class KeyValuePair {
 
     /**
      * Загружает описание ключа и значения в объекте в StringBuilder
+     *
      * @param strB - StringBuilder, в который следует поместить описание ключа и значения
      */
     public void describeSelf(StringBuilder strB) {
@@ -58,8 +62,12 @@ public class KeyValuePair {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final KeyValuePair that = (KeyValuePair) o;
         return Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);

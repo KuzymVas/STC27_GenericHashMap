@@ -1,11 +1,11 @@
 package org.innopolis.kuzymvas.unicomparable.hashmap;
 
-public class BasicBucketFactory implements  BucketFactory {
+public class BasicBucketFactory implements BucketFactory {
 
     /**
      * Перечисление возможных типов корзин, производимых фабрикой
      */
-    public enum  BucketType {
+    public enum BucketType {
         AVL_TREE, // Коризна, основанная на АВЛ дереве
         LIST // Корзина, основанная на односвязном списке
     }
@@ -19,9 +19,12 @@ public class BasicBucketFactory implements  BucketFactory {
     @Override
     public Bucket createBucket() {
         switch (targetType) {
-            case AVL_TREE: return new AVLTreeBucket();
-            case LIST: return new ListBucket();
-            default: return null;
+            case AVL_TREE:
+                return new AVLTreeBucket();
+            case LIST:
+                return new ListBucket();
+            default:
+                return null;
         }
     }
 

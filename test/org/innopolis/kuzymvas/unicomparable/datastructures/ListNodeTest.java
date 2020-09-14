@@ -16,9 +16,8 @@ public class ListNodeTest {
     private ArrayList<UniComparable> keys;
     private ArrayList<Object> values;
     private ArrayList<Integer> shuffle;
-    private  Object replaceValue;
-    private  UniComparable invalidKey;
-
+    private Object replaceValue;
+    private UniComparable invalidKey;
 
 
     @Before
@@ -36,7 +35,7 @@ public class ListNodeTest {
         values.add(2L);
         values.add(null);
         values.add("");
-        values.add(new org.innopolis.kuzymvas.original.datastructures.ListNode("",""));
+        values.add(new org.innopolis.kuzymvas.original.datastructures.ListNode("", ""));
         // "Случайный" порядок для имитации произвольного доступа к элементам в хранилище
         shuffle = new ArrayList<>(7);
         shuffle.add(3);
@@ -55,11 +54,11 @@ public class ListNodeTest {
 
     @Test
     public void testToStringTest() {
-        final ListNode node = new ListNode(new UniComparableContainer("42"),null);
+        final ListNode node = new ListNode(new UniComparableContainer("42"), null);
         System.out.println("Single node = " + node);
         final ListNode head = new ListNode(keys.get(0), values.get(0));
-        for (int i = 1; i<keys.size(); i++) {
-            head.putIntoList(keys.get(i),values.get(i));
+        for (int i = 1; i < keys.size(); i++) {
+            head.putIntoList(keys.get(i), values.get(i));
         }
         System.out.println("Entire list = " + head);
     }
@@ -81,15 +80,15 @@ public class ListNodeTest {
     @Test
     public void testCreateSame() {
         final ListNode head = new ListNode(keys.get(0), values.get(0));
-        Assert.assertFalse("List put a same key into a new node instead of replacing old one during 'put'",head.putIntoList(keys.get(0), values.get(0)));
+        Assert.assertFalse("List put a same key into a new node instead of replacing old one during 'put'", head.putIntoList(keys.get(0), values.get(0)));
     }
 
 
     @Test
     public void testCreateMultiple() {
         final ListNode head = new ListNode(keys.get(0), values.get(0));
-        for (int i = 1; i<keys.size(); i++) {
-            Assert.assertTrue("List didn't  put a unique key into a new node during 'put' for a given key [" + i + "]",head.putIntoList(keys.get(i), values.get(i)));
+        for (int i = 1; i < keys.size(); i++) {
+            Assert.assertTrue("List didn't  put a unique key into a new node during 'put' for a given key [" + i + "]", head.putIntoList(keys.get(i), values.get(i)));
         }
         for (Integer i : shuffle) {
             Assert.assertTrue("List  doesn't contain key[" + i + "], that was put in it", head.containsKey(keys.get(i)));
@@ -217,7 +216,7 @@ public class ListNodeTest {
         for (int i = 1; i < keys.size(); i++) {
             head.putIntoList(keys.get(i), values.get(i));
         }
-        for (int i = 0; i < keys.size()-1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
+        for (int i = 0; i < keys.size() - 1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
                 head = head.removeFromList(keys.get(i));
                 Assert.assertNotEquals("List removed itself, while still containing values", null, head);
@@ -227,12 +226,13 @@ public class ListNodeTest {
             Assert.assertFalse("List contain key, that was removed from it", head.containsKey(keys.get(i)));
         }
         try {
-            head = head.removeFromList(keys.get(keys.size()-1));
+            head = head.removeFromList(keys.get(keys.size() - 1));
             assertNull("List didn't remove itself on the last value removal", head);
         } catch (KeyNotPresentException e) {
             Assert.fail("List 'removeFromList' method threw an exception.");
         }
     }
+
     @Test
     public void testRemoveNegative() {
         ListNode head = new ListNode(keys.get(0), values.get(0));

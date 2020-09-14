@@ -20,7 +20,6 @@ public class AVLTreeNodeTest {
     private UniComparable invalidKey;
 
 
-
     @Before
     public void setUp() {
         // Подготавливаем массив объектов-ключей
@@ -57,8 +56,8 @@ public class AVLTreeNodeTest {
         final AVLTreeNode node = new AVLTreeNode(keys.get(0), values.get(0));
         System.out.println("Single node = " + node);
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
-        for (int i = 1; i<keys.size(); i++) {
-            root = root.insert(keys.get(i),values.get(i));
+        for (int i = 1; i < keys.size(); i++) {
+            root = root.insert(keys.get(i), values.get(i));
         }
         System.out.println("Entire tree = " + root);
     }
@@ -88,7 +87,7 @@ public class AVLTreeNodeTest {
     @Test
     public void testCreateMultiple() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
-        for (int i = 1; i<keys.size(); i++) {
+        for (int i = 1; i < keys.size(); i++) {
             root = root.insert(keys.get(i), values.get(i));
         }
         for (Integer i : shuffle) {
@@ -217,7 +216,7 @@ public class AVLTreeNodeTest {
         for (int i = 1; i < keys.size(); i++) {
             root = root.insert(keys.get(i), values.get(i));
         }
-        for (int i = 0; i < keys.size()-1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
+        for (int i = 0; i < keys.size() - 1; i++) { // shuffle содержит повторяющиеся значения, поэтому не используется здесь
             try {
                 root = root.remove(keys.get(i));
                 Assert.assertNotEquals("Tree removed itself, while still containing values", null, root);
@@ -227,12 +226,13 @@ public class AVLTreeNodeTest {
             Assert.assertFalse("Tree contain key, that was removed from it", root.containsKey(keys.get(i)));
         }
         try {
-            root = root.remove(keys.get(keys.size()-1));
+            root = root.remove(keys.get(keys.size() - 1));
             assertNull("Tree didn't remove itself on the last value removal", root);
         } catch (KeyNotPresentException e) {
             Assert.fail("Tree 'removeFromList' method threw an exception.");
         }
     }
+
     @Test
     public void testRemoveNegative() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
@@ -254,27 +254,27 @@ public class AVLTreeNodeTest {
             }
         }
     }
+
     @Test
     public void testTreeSelfBalancing() {
         AVLTreeNode root = new AVLTreeNode(keys.get(0), values.get(0));
         Assert.assertEquals("Height of a single node tree isn't equal to 1", 1, root.getHeight());
-        Assert.assertEquals("Single node tree is unbalanced",0,root.getMaxAbsTreeBalance());
+        Assert.assertEquals("Single node tree is unbalanced", 0, root.getMaxAbsTreeBalance());
         UniComparableContainer[] seqKeys = new UniComparableContainer[1000];
         for (int i = 0; i < 1000; i++) {
             seqKeys[i] = new UniComparableContainer(i);
             root = root.insert(seqKeys[i], null);
-            Assert.assertTrue("Tree with " + (i+2) + " elements and height "+root.getHeight()+" is too high for AVL tree.",root.getHeight() <= 1.45*Math.log(i+4)/Math.log(2));
-            Assert.assertTrue("Tree with " + (i+2) + " nodes is unbalanced.",root.getMaxAbsTreeBalance() < 2);
+            Assert.assertTrue("Tree with " + (i + 2) + " elements and height " + root.getHeight() + " is too high for AVL tree.", root.getHeight() <= 1.45 * Math.log(i + 4) / Math.log(2));
+            Assert.assertTrue("Tree with " + (i + 2) + " nodes is unbalanced.", root.getMaxAbsTreeBalance() < 2);
         }
         AVLTreeNode rootReverse = new AVLTreeNode(keys.get(0), values.get(0));
         for (int i = 0; i < 1000; i++) {
             rootReverse = rootReverse.insert(seqKeys[1000 - i - 1], null);
-            Assert.assertTrue("Tree with " + (i+2) + " elements and height "+rootReverse.getHeight()+" is too high for AVL tree.",rootReverse.getHeight() <= 1.45*Math.log(i+4)/Math.log(2));
-            Assert.assertTrue("Tree with " + (i+2) + " nodes is unbalanced.",rootReverse.getMaxAbsTreeBalance() < 2);
+            Assert.assertTrue("Tree with " + (i + 2) + " elements and height " + rootReverse.getHeight() + " is too high for AVL tree.", rootReverse.getHeight() <= 1.45 * Math.log(i + 4) / Math.log(2));
+            Assert.assertTrue("Tree with " + (i + 2) + " nodes is unbalanced.", rootReverse.getMaxAbsTreeBalance() < 2);
         }
 
     }
-
 
 
 }

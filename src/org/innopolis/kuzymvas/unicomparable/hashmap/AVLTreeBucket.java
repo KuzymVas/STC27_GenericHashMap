@@ -5,9 +5,9 @@ import org.innopolis.kuzymvas.unicomparable.UniComparable;
 import org.innopolis.kuzymvas.unicomparable.datastructures.AVLTreeNode;
 import org.innopolis.kuzymvas.unicomparable.datastructures.KeyValuePair;
 
-public class AVLTreeBucket implements Bucket{
+public class AVLTreeBucket implements Bucket {
 
-    AVLTreeNode root;
+    private AVLTreeNode root;
 
     public AVLTreeBucket() {
         root = null;
@@ -18,11 +18,10 @@ public class AVLTreeBucket implements Bucket{
         if (root == null) {
             root = new AVLTreeNode(key, value);
             return true;
-        }
-        else {
+        } else {
             final boolean retVal = !(root.containsKey(key));
             root = root.insert(key, value);
-            return  retVal;
+            return retVal;
         }
     }
 
@@ -53,7 +52,7 @@ public class AVLTreeBucket implements Bucket{
     @Override
     public boolean containsKey(UniComparable key) {
         if (root == null) {
-            return  false;
+            return false;
         }
         return root.containsKey(key);
     }
@@ -61,7 +60,7 @@ public class AVLTreeBucket implements Bucket{
     @Override
     public boolean containsPair(KeyValuePair pair) {
         if (root == null) {
-            return  false;
+            return false;
         }
         return root.containsPair(pair);
     }

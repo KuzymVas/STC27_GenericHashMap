@@ -1,6 +1,6 @@
 package org.innopolis.kuzymvas.unicomparable.hashmap;
 
-public class MockBucketFactory   implements  BucketFactory{
+public class MockBucketFactory implements BucketFactory {
 
     private MockBucket[] backdoorBuckets;
 

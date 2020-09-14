@@ -11,12 +11,13 @@ import java.util.Objects;
  */
 public class KeyValuePair implements UniComparable {
 
-    final private UniComparable key;
-    final private Object value;
+    private final UniComparable key;
+    private final Object value;
 
     /**
-     *  Создает новый иммутабельный объект ключ-значение
-     * @param key - ключ нового объекта
+     * Создает новый иммутабельный объект ключ-значение
+     *
+     * @param key   - ключ нового объекта
      * @param value - значение нового объекта
      */
     public KeyValuePair(UniComparable key, Object value) {
@@ -27,12 +28,14 @@ public class KeyValuePair implements UniComparable {
     public UniComparable getKey() {
         return key;
     }
+
     public Object getValue() {
         return value;
     }
 
     /**
-     *  Проверяет совпадает ли данный ключ с ключом этого объекта
+     * Проверяет совпадает ли данный ключ с ключом этого объекта
+     *
      * @param key - проверяемый ключ
      * @return - true, если ключи совпадают, false в противном случае
      */
@@ -42,6 +45,7 @@ public class KeyValuePair implements UniComparable {
 
     /**
      * Загружает описание ключа и значения в объекте в StringBuilder
+     *
      * @param strB - StringBuilder, в который следует поместить описание ключа и значения
      */
     public void describeSelf(StringBuilder strB) {
@@ -61,8 +65,12 @@ public class KeyValuePair implements UniComparable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final KeyValuePair that = (KeyValuePair) o;
         return Objects.equals(key, that.key) &&
                 Objects.equals(value, that.value);
@@ -75,6 +83,6 @@ public class KeyValuePair implements UniComparable {
 
     @Override
     public UniComparableToken getComparableToken() {
-        return (key == null)? UniComparable.NULL_TOKEN: key.getComparableToken();
+        return (key == null) ? UniComparable.NULL_TOKEN : key.getComparableToken();
     }
 }

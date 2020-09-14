@@ -31,8 +31,12 @@ public class SimpleHashMapTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             FixedHash that = (FixedHash) o;
             return (this.val == that.val);
         }
@@ -50,17 +54,17 @@ public class SimpleHashMapTest {
         // Подготавливаем массив объектов-ключей
         keys = new ArrayList<>(5);
         keys.add(1);
-        keys.add(new FixedHash(1,-100));
+        keys.add(new FixedHash(1, -100));
         keys.add("Three");
         keys.add(4.0);
         keys.add(null);
         // Подготавливаем массив объектов-ключей, гарантированно вызывающих коллизии.
         keysForCollision = new ArrayList<>(5);
-        keysForCollision.add(new FixedHash(1,0));
-        keysForCollision.add(new FixedHash(2,0));
-        keysForCollision.add(new FixedHash(3,0));
-        keysForCollision.add(new FixedHash(4,0));
-        keysForCollision.add(new FixedHash(5,0));
+        keysForCollision.add(new FixedHash(1, 0));
+        keysForCollision.add(new FixedHash(2, 0));
+        keysForCollision.add(new FixedHash(3, 0));
+        keysForCollision.add(new FixedHash(4, 0));
+        keysForCollision.add(new FixedHash(5, 0));
         // Подготавливаем массив объектов-значений
         values = new ArrayList<>(5);
         values.add(42);

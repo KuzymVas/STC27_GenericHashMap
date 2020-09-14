@@ -8,8 +8,8 @@ import java.util.Arrays;
 
 public class SimpleHashMap implements HashMap {
 
-    final ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
-    int size; // Число пар ключ-значение в хранилище
+    private final ListNode[] buckets; // Массив корзин для каждого из возможных значений хэша
+    private int size; // Число пар ключ-значение в хранилище
 
     /**
      * Создает хэш таблицу с 1024 корзинами
@@ -26,21 +26,11 @@ public class SimpleHashMap implements HashMap {
      */
     public SimpleHashMap(int bucketNumber) throws IllegalArgumentException {
         size = 0;
-        if (bucketNumber <= 0) throw new IllegalArgumentException("Hash map can't have 0 or less buckets");
+        if (bucketNumber <= 0) {
+            throw new IllegalArgumentException("Hash map can't have 0 or less buckets");
+        }
         buckets = new ListNode[bucketNumber];
     }
-
-    /**
-     * Определяет номер корзины, соответствующей ключу
-     *
-     * @param key - ключ
-     * @return номер корзины в массиве коризн
-     */
-    private int getKeyBucket(Object key) {
-
-        return (key == null) ? 0 : Math.abs(key.hashCode()) % buckets.length;
-    }
-
 
     @Override
     public void put(Object key, Object value) {
@@ -134,15 +124,21 @@ public class SimpleHashMap implements HashMap {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof  HashMap)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof HashMap)) {
+            return false;
+        }
         final HashMap that = (HashMap) o;
         if (this.size != that.size()) // разные размеры -> не равны
+        {
             return false;
-        for (ListNode bucket: buckets) { // Из каждого ведра
+        }
+        for (ListNode bucket : buckets) { // Из каждого ведра
             if (bucket != null) {
                 KeyValuePair[] pairs = bucket.getKeyValuePairs();
-                for (KeyValuePair pair: pairs) { // Каждую пару, что в нем есть
+                for (KeyValuePair pair : pairs) { // Каждую пару, что в нем есть
                     if (!that.containsPair(pair)) { // Ищем в другом
                         return false;
                     }
@@ -165,5 +161,16 @@ public class SimpleHashMap implements HashMap {
         }
         Arrays.sort(nodeHashes); // Сортируем хэши, чтобы обеспечить независимость от порядка элементов в ведрах
         return Arrays.hashCode(nodeHashes); // Берем хэш сортированного массива хэшей.
+    }
+
+    /**
+     * Определяет номер корзины, соответствующей ключу
+     *
+     * @param key - ключ
+     * @return номер корзины в массиве коризн
+     */
+    private int getKeyBucket(Object key) {
+
+        return (key == null) ? 0 : Math.abs(key.hashCode()) % buckets.length;
     }
 }

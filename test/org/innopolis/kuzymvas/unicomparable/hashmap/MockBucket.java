@@ -5,7 +5,7 @@ import org.innopolis.kuzymvas.unicomparable.UniComparable;
 import org.innopolis.kuzymvas.unicomparable.UniComparableContainer;
 import org.innopolis.kuzymvas.unicomparable.datastructures.KeyValuePair;
 
-public class MockBucket implements  Bucket{
+public class MockBucket implements Bucket {
 
     public boolean usedContainsKey;
     public boolean usedPut, usedReplace, usedGet, usedRemove;
@@ -67,7 +67,7 @@ public class MockBucket implements  Bucket{
     @Override
     public KeyValuePair[] getKeyValuePairs() {
         KeyValuePair[] mockPair = new KeyValuePair[1];
-        mockPair[0] = new KeyValuePair(new UniComparableContainer(0),0);
+        mockPair[0] = new KeyValuePair(new UniComparableContainer(0), 0);
         return mockPair;
     }
 

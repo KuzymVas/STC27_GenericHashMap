@@ -35,9 +35,9 @@ public class BucketsTest {
 
     @Parameterized.Parameters
     public static Collection bucketsToTest() {
-        return Arrays.asList(new Object[][] {
-                { BasicBucketFactory.BucketType.AVL_TREE, "AVLTreeBucket" },
-                { BasicBucketFactory.BucketType.LIST, "ListBucket" }
+        return Arrays.asList(new Object[][]{
+                {BasicBucketFactory.BucketType.AVL_TREE, "AVLTreeBucket"},
+                {BasicBucketFactory.BucketType.LIST, "ListBucket"}
         });
     }
 
@@ -76,44 +76,44 @@ public class BucketsTest {
 
     @Test
     public void testPutSingle() {
-        Assert.assertTrue("Empty bucket "+bucketName+" somehow didn't create a new node when put into",bucket.put(keys.get(0), values.get(0)));
-        Assert.assertTrue("Bucket "+bucketName+" doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
+        Assert.assertTrue("Empty bucket " + bucketName + " somehow didn't create a new node when put into", bucket.put(keys.get(0), values.get(0)));
+        Assert.assertTrue("Bucket " + bucketName + " doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
         try {
-            Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key", values.get(0), bucket.get(keys.get(0)));
+            Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key", values.get(0), bucket.get(keys.get(0)));
         } catch (KeyNotPresentException e) {
-            Assert.fail("Bucket "+bucketName+" 'get' method threw an exception.");
+            Assert.fail("Bucket " + bucketName + " 'get' method threw an exception.");
         }
         KeyValuePair pair = new KeyValuePair(keys.get(0), values.get(0));
-        Assert.assertTrue("Bucket "+bucketName+" doesn't contain pair, that was put in it", bucket.containsPair(pair));
+        Assert.assertTrue("Bucket " + bucketName + " doesn't contain pair, that was put in it", bucket.containsPair(pair));
 
     }
 
     @Test
     public void testPutSame() {
-        Assert.assertTrue("Empty bucket "+bucketName+" somehow didn't create a new node when put into",bucket.put(keys.get(0), values.get(0)));
-        Assert.assertFalse("Bucket "+bucketName+" did create a new node when a same key was put into it",bucket.put(keys.get(0), replaceValue));
-        Assert.assertTrue("Bucket "+bucketName+" doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
+        Assert.assertTrue("Empty bucket " + bucketName + " somehow didn't create a new node when put into", bucket.put(keys.get(0), values.get(0)));
+        Assert.assertFalse("Bucket " + bucketName + " did create a new node when a same key was put into it", bucket.put(keys.get(0), replaceValue));
+        Assert.assertTrue("Bucket " + bucketName + " doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
         try {
-            Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key", replaceValue, bucket.get(keys.get(0)));
+            Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key", replaceValue, bucket.get(keys.get(0)));
         } catch (KeyNotPresentException e) {
-            Assert.fail("Bucket "+bucketName+" 'get' method threw an exception.");
+            Assert.fail("Bucket " + bucketName + " 'get' method threw an exception.");
         }
     }
 
     @Test
     public void testPutMultiple() {
         for (int i = 0; i < keys.size(); i++) {
-            Assert.assertTrue("Bucket "+bucketName+" didn't create a new node for key, that wasn't put into it before",bucket.put(keys.get(i), values.get(i)));
+            Assert.assertTrue("Bucket " + bucketName + " didn't create a new node for key, that wasn't put into it before", bucket.put(keys.get(i), values.get(i)));
         }
         for (Integer i : shuffle) {
-            Assert.assertTrue("Bucket "+bucketName+" doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
+            Assert.assertTrue("Bucket " + bucketName + " doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
             try {
-                Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
+                Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
             } catch (KeyNotPresentException e) {
-                Assert.fail("Bucket "+bucketName+" 'get' method threw an exception at key-value [" + i + "].");
+                Assert.fail("Bucket " + bucketName + " 'get' method threw an exception at key-value [" + i + "].");
             }
             KeyValuePair pair = new KeyValuePair(keys.get(i), values.get(i));
-            Assert.assertTrue("Bucket "+bucketName+" doesn't contain pair, that was put in it at key-value [" + i + "].", bucket.containsPair(pair));
+            Assert.assertTrue("Bucket " + bucketName + " doesn't contain pair, that was put in it at key-value [" + i + "].", bucket.containsPair(pair));
         }
 
     }
@@ -124,13 +124,13 @@ public class BucketsTest {
         try {
             bucket.replace(keys.get(0), replaceValue);
         } catch (KeyNotPresentException e) {
-            Assert.fail("Bucket "+bucketName+" 'replace' method threw an exception.");
+            Assert.fail("Bucket " + bucketName + " 'replace' method threw an exception.");
         }
-        Assert.assertTrue("Bucket "+bucketName+" doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
+        Assert.assertTrue("Bucket " + bucketName + " doesn't contain key, that was put in it", bucket.containsKey(keys.get(0)));
         try {
-            Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key", replaceValue, bucket.get(keys.get(0)));
+            Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key", replaceValue, bucket.get(keys.get(0)));
         } catch (KeyNotPresentException e) {
-            Assert.fail("Bucket "+bucketName+" 'get' method threw an exception.");
+            Assert.fail("Bucket " + bucketName + " 'get' method threw an exception.");
         }
     }
 
@@ -143,13 +143,13 @@ public class BucketsTest {
             try {
                 bucket.replace(keys.get(i), replaceValue);
             } catch (KeyNotPresentException e) {
-                Assert.fail("Bucket "+bucketName+" 'replace' method threw an exception.");
+                Assert.fail("Bucket " + bucketName + " 'replace' method threw an exception.");
             }
-            Assert.assertTrue("Bucket "+bucketName+" doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
+            Assert.assertTrue("Bucket " + bucketName + " doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
             try {
-                Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key [" + i + "]", replaceValue, bucket.get(keys.get(i)));
+                Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key [" + i + "]", replaceValue, bucket.get(keys.get(i)));
             } catch (KeyNotPresentException e) {
-                Assert.fail("Bucket "+bucketName+" 'get' method threw an exception at key-value [" + i + "].");
+                Assert.fail("Bucket " + bucketName + " 'get' method threw an exception at key-value [" + i + "].");
             }
         }
     }
@@ -161,15 +161,15 @@ public class BucketsTest {
         }
         try {
             bucket.replace(invalidKey, replaceValue);
-            Assert.fail("Bucket "+bucketName+" 'replace' method did NOT throw an exception on invalid key.");
+            Assert.fail("Bucket " + bucketName + " 'replace' method did NOT throw an exception on invalid key.");
         } catch (KeyNotPresentException e) {
             // Проверяем, что выброс исключения не привел к нарушению состояния хранилища
             for (Integer i : shuffle) {
-                Assert.assertTrue("Bucket "+bucketName+" doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
+                Assert.assertTrue("Bucket " + bucketName + " doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
                 try {
-                    Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
+                    Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
                 } catch (KeyNotPresentException e2) {
-                    Assert.fail("Bucket "+bucketName+" 'get' method threw an exception at key-value [" + i + "].");
+                    Assert.fail("Bucket " + bucketName + " 'get' method threw an exception at key-value [" + i + "].");
                 }
             }
         }
@@ -181,9 +181,9 @@ public class BucketsTest {
         try {
             bucket.remove(keys.get(0));
         } catch (KeyNotPresentException e) {
-            Assert.fail("Bucket "+bucketName+" 'remove' method threw an exception.");
+            Assert.fail("Bucket " + bucketName + " 'remove' method threw an exception.");
         }
-        Assert.assertFalse("Bucket "+bucketName+" does contain key, that was removed from it", bucket.containsKey(keys.get(0)));
+        Assert.assertFalse("Bucket " + bucketName + " does contain key, that was removed from it", bucket.containsKey(keys.get(0)));
     }
 
     @Test
@@ -195,9 +195,9 @@ public class BucketsTest {
             try {
                 bucket.remove(key);
             } catch (KeyNotPresentException e) {
-                Assert.fail("Bucket "+bucketName+" 'remove' method threw an exception.");
+                Assert.fail("Bucket " + bucketName + " 'remove' method threw an exception.");
             }
-            Assert.assertFalse("Bucket "+bucketName+" does contain key, that was removed from it", bucket.containsKey(key));
+            Assert.assertFalse("Bucket " + bucketName + " does contain key, that was removed from it", bucket.containsKey(key));
         }
     }
 
@@ -208,15 +208,15 @@ public class BucketsTest {
         }
         try {
             bucket.remove(invalidKey);
-            Assert.fail("Bucket "+bucketName+" 'remove' method did NOT throw an exception on invalid key.");
+            Assert.fail("Bucket " + bucketName + " 'remove' method did NOT throw an exception on invalid key.");
         } catch (KeyNotPresentException e) {
             // Проверяем, что выброс исключения не привел к нарушению состояния хранилища
             for (Integer i : shuffle) {
-                Assert.assertTrue("Bucket "+bucketName+" doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
+                Assert.assertTrue("Bucket " + bucketName + " doesn't contain key[" + i + "], that was put in it", bucket.containsKey(keys.get(i)));
                 try {
-                    Assert.assertEquals("Bucket "+bucketName+" returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
+                    Assert.assertEquals("Bucket " + bucketName + " returned incorrect value for a given key [" + i + "]", values.get(i), bucket.get(keys.get(i)));
                 } catch (KeyNotPresentException e2) {
-                    Assert.fail("Bucket "+bucketName+" 'get' method threw an exception at key-value [" + i + "].");
+                    Assert.fail("Bucket " + bucketName + " 'get' method threw an exception at key-value [" + i + "].");
                 }
             }
         }
@@ -225,21 +225,21 @@ public class BucketsTest {
     @Test
     public void testKeyValuePairFunctions() {
         final KeyValuePair[] pairs = new KeyValuePair[keys.size()];
-        final int[] hashes = new int[keys.size()] ;
+        final int[] hashes = new int[keys.size()];
         for (int i = 0; i < keys.size(); i++) {
             pairs[i] = new KeyValuePair(keys.get(i), values.get(i));
             hashes[i] = pairs[i].hashCode();
             bucket.put(keys.get(i), values.get(i));
-            Assert.assertTrue("Bucket "+bucketName+" doesn't contain key-value pair, that was put into it", bucket.containsPair(pairs[i]));
+            Assert.assertTrue("Bucket " + bucketName + " doesn't contain key-value pair, that was put into it", bucket.containsPair(pairs[i]));
         }
         final KeyValuePair[] pairsFromBucket = bucket.getKeyValuePairs();
-        Assert.assertEquals("List of pairs inside the bucket "+bucketName+" has a different length than amount of pairs that were put into it", pairs.length, pairsFromBucket.length);
+        Assert.assertEquals("List of pairs inside the bucket " + bucketName + " has a different length than amount of pairs that were put into it", pairs.length, pairsFromBucket.length);
         List<KeyValuePair> listOfPairsFromBucket = Arrays.asList(pairsFromBucket);
         for (int i = 0; i < pairs.length; i++) {
-            Assert.assertTrue("List of pairs inside the bucket "+bucketName+" does not contain pair ["+i+"], that was put into it",listOfPairsFromBucket.contains(pairs[i]));
+            Assert.assertTrue("List of pairs inside the bucket " + bucketName + " does not contain pair [" + i + "], that was put into it", listOfPairsFromBucket.contains(pairs[i]));
         }
         final int[] hashesFromBucket = bucket.getKeyValuePairsHashes();
-        Assert.assertEquals("List of hashes inside the bucket "+bucketName+" has a different length than amount of pairs that were put into it", hashes.length, hashesFromBucket.length);
+        Assert.assertEquals("List of hashes inside the bucket " + bucketName + " has a different length than amount of pairs that were put into it", hashes.length, hashesFromBucket.length);
         // Нельзя использовать asList с массивом примитивных типов.
         for (int i = 0; i < hashes.length; i++) {
             boolean contains = false;
@@ -249,7 +249,7 @@ public class BucketsTest {
                     break;
                 }
             }
-            Assert.assertTrue("List of hashes inside the bucket "+bucketName+" does not contain hash of pair ["+i+"], that was put into it", contains);
+            Assert.assertTrue("List of hashes inside the bucket " + bucketName + " does not contain hash of pair [" + i + "], that was put into it", contains);
         }
 
     }
