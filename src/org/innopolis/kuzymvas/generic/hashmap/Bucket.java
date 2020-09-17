@@ -6,7 +6,12 @@ import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 import java.util.List;
 import java.util.Map;
 
-public interface Bucket<K,V> {
+/**
+ *  Интерфейс корзины хэш таблицы
+ * @param <K> - тип ключа таблицы
+ * @param <V> - тип значения таблицы
+ */
+public interface Bucket<K, V> {
 
     /**
      * Помещает заданную пару ключ-знаение в корзину, если такого ключа в ней нет
@@ -56,14 +61,6 @@ public interface Bucket<K,V> {
     boolean containsKey(Object key);
 
     /**
-     * Проверяет, содержится ли заданная пара ключ-значение в корзине
-     *
-     * @param pair - заданная пара ключ-значение
-     * @return -  true, если пара содержится в корзине, false в противном случае
-     */
-    boolean containsPair(KeyValuePair<?,?> pair);
-
-    /**
      * Добавляет описание всех содержащихся в корзине пар ключ-значение в StringBuilder
      *
      * @param strB - StringBuilder для добавления описаний
@@ -75,7 +72,7 @@ public interface Bucket<K,V> {
      *
      * @return - массив всех содержащихся в корзине пар ключ-значение
      */
-    List<KeyValuePair<K,V>> getKeyValuePairs();
+    List<KeyValuePair<K, V>> getKeyValuePairs();
 
     /**
      * Возвращает массив хэшей всех содержащихся в корзине пар ключ-значение
@@ -84,7 +81,16 @@ public interface Bucket<K,V> {
      */
     int[] getKeyValuePairsHashes();
 
-    Map.Entry<K,V> getEntry(Object key);
+    /**
+     * Возвращает хранимую пару ключ-значение с заданным ключом
+     *
+     * @param key - искомый ключ
+     * @return - пара ключ-значение, его содержащая.
+     */
+    Map.Entry<K, V> getEntry(Object key);
 
+    /**
+     * Очищает корзину от всех пар ключей-значение.
+     */
     void clear();
 }

@@ -8,9 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ListBucket<K,V> implements Bucket<K,V> {
+/**
+ *  Корзина хэш таблицы, использующая односвязный список для хранения пар ключ-значение внутри себя
+ * @param <K> - тип ключа
+ * @param <V> - тип значения
+ */
+public class ListBucket<K, V> implements Bucket<K, V> {
 
-    private ListNode<K,V> head;
+    private ListNode<K, V> head;
 
     public ListBucket() {
         head = null;
@@ -58,13 +63,6 @@ public class ListBucket<K,V> implements Bucket<K,V> {
         return head.containsKey(key);
     }
 
-    @Override
-    public boolean containsPair(KeyValuePair<?,?> pair) {
-        if (head == null) {
-            return false;
-        }
-        return head.containsPair(pair);
-    }
 
     @Override
     public void describeBucket(StringBuilder strB) {
@@ -75,7 +73,7 @@ public class ListBucket<K,V> implements Bucket<K,V> {
     }
 
     @Override
-    public List<KeyValuePair<K,V>> getKeyValuePairs() {
+    public List<KeyValuePair<K, V>> getKeyValuePairs() {
         if (head == null) {
             return new ArrayList<>();
         }

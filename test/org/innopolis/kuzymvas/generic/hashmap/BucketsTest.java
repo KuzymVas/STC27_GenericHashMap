@@ -80,9 +80,6 @@ public class BucketsTest {
         } catch (KeyNotPresentException e) {
             Assert.fail("Bucket " + bucketName + " 'get' method threw an exception.");
         }
-        KeyValuePair<Double,Object> pair = new KeyValuePair<>(keys.get(0), values.get(0));
-        Assert.assertTrue("Bucket " + bucketName + " doesn't contain pair, that was put in it", bucket.containsPair(pair));
-
     }
 
     @Test
@@ -109,8 +106,6 @@ public class BucketsTest {
             } catch (KeyNotPresentException e) {
                 Assert.fail("Bucket " + bucketName + " 'get' method threw an exception at key-value [" + i + "].");
             }
-            KeyValuePair<Double,Object> pair = new KeyValuePair<>(keys.get(i), values.get(i));
-            Assert.assertTrue("Bucket " + bucketName + " doesn't contain pair, that was put in it at key-value [" + i + "].", bucket.containsPair(pair));
         }
 
     }
@@ -227,7 +222,8 @@ public class BucketsTest {
             pairs.add(new KeyValuePair<>(keys.get(i), values.get(i)));
             hashes[i] = pairs.get(i).hashCode();
             bucket.put(keys.get(i), values.get(i));
-            Assert.assertTrue("Bucket " + bucketName + " doesn't contain key-value pair, that was put into it", bucket.containsPair(pairs.get(i)));
+            Assert.assertNotNull("Bucket " + bucketName + " doesn't contain key-value pair, that was put into it",
+                                 bucket.getEntry(pairs.get(i).getKey()));
         }
         final List<KeyValuePair<Double,Object>> pairsFromBucket = bucket.getKeyValuePairs();
         Assert.assertEquals("List of pairs inside the bucket " + bucketName + " has a different length than amount of pairs that were put into it", pairs.size(), pairsFromBucket.size());

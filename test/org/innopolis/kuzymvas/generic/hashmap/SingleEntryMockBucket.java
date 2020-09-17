@@ -60,11 +60,6 @@ public class SingleEntryMockBucket<K,V> implements  Bucket<K,V> {
     }
 
     @Override
-    public boolean containsPair(KeyValuePair<?, ?> pair) {
-        return this.pair.equals(pair);
-    }
-
-    @Override
     public void describeBucket(StringBuilder strB) {
         pair.describeSelf(strB);
     }

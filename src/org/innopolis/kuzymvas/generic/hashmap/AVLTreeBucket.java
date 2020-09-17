@@ -8,9 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AVLTreeBucket<K,V> implements Bucket<K,V> {
+/**
+ *  Корзина хэш таблицы, использующая АВЛ дерево для хранения пар ключ-значение внутри себя
+ * @param <K> - тип ключа
+ * @param <V> - тип значения
+ */
+public class AVLTreeBucket<K, V> implements Bucket<K, V> {
 
-    private AVLTreeNode<K,V> root;
+    private AVLTreeNode<K, V> root;
 
     public AVLTreeBucket() {
         root = null;
@@ -61,14 +66,6 @@ public class AVLTreeBucket<K,V> implements Bucket<K,V> {
     }
 
     @Override
-    public boolean containsPair(KeyValuePair<?,?> pair) {
-        if (root == null) {
-            return false;
-        }
-        return root.containsPair(pair);
-    }
-
-    @Override
     public void describeBucket(StringBuilder strB) {
         if (root == null) {
             return;
@@ -77,7 +74,7 @@ public class AVLTreeBucket<K,V> implements Bucket<K,V> {
     }
 
     @Override
-    public List<KeyValuePair<K,V>> getKeyValuePairs() {
+    public List<KeyValuePair<K, V>> getKeyValuePairs() {
         if (root == null) {
             return new ArrayList<>();
         }

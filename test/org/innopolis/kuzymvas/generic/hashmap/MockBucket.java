@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MockBucket<K,V> implements Bucket<K,V> {
 
-    public boolean usedContainsKey, usedContainsPair;
+    public boolean usedContainsKey;
     public boolean usedPut, usedReplace, usedGet, usedRemove, usedClear;
     public String description;
     public boolean throwExceptions;
@@ -55,11 +55,6 @@ public class MockBucket<K,V> implements Bucket<K,V> {
         return returnOnContainsRequests;
     }
 
-    @Override
-    public boolean containsPair(KeyValuePair<?,?> pair) {
-        usedContainsPair = true;
-        return returnOnContainsRequests;
-    }
 
     @Override
     public void describeBucket(StringBuilder strB) {
@@ -97,7 +92,6 @@ public class MockBucket<K,V> implements Bucket<K,V> {
         usedPut = false;
         usedGet = false;
         usedContainsKey = false;
-        usedContainsPair = false;
         usedRemove = false;
         usedReplace = false;
         usedClear = false;

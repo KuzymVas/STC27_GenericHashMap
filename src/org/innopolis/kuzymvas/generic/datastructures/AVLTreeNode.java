@@ -5,17 +5,19 @@ import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import java.util.*;
 
 /**
+ *
  * Класс узла АВЛ-дерева, хранящего пару ключ-значение.
- * Имеет возможность сравниваться с другими узлами за счет ограничения
- * типа ключа до сравнимого.
+ *
+ * @param <K> - тип ключа
+ * @param <V> - тип значения
  */
-public class AVLTreeNode<K,V> {
+public class AVLTreeNode<K, V> {
 
-    private KeyValuePair<K,V> pair;
-    private int height; // Высота узла в дереве (у листьев = 1)
-    private AVLTreeNode<K,V> left; // Ссылки на ветви дерева
-    private AVLTreeNode<K,V> right;
     private final Comparator<K> comparator;
+    private KeyValuePair<K, V> pair;
+    private int height; // Высота узла в дереве (у листьев = 1)
+    private AVLTreeNode<K, V> left; // Ссылки на ветви дерева
+    private AVLTreeNode<K, V> right;
 
     /**
      * Создает новый узел дерева (и  корень дерева из одного узла) с заданной парой ключ-значение
@@ -34,15 +36,71 @@ public class AVLTreeNode<K,V> {
     /**
      * Создает новый узел дерева (и  корень дерева из одного узла) с заданной парой ключ-значение
      *
-     * @param key   - ключ, хранимый в узле дерева
-     * @param value - значение, хранимое в узле дерева
+     * @param key        - ключ, хранимый в узле дерева
+     * @param value      - значение, хранимое в узле дерева
+     * @param comparator - компаратор для сравнения ключей узлов дерева между собой
      */
-    public AVLTreeNode(K key, V value, Comparator<K> comparator)  {
+    public AVLTreeNode(K key, V value, Comparator<K> comparator) {
         height = 1;
         left = null;
         right = null;
         pair = new KeyValuePair<>(key, value);
         this.comparator = comparator;
+    }
+
+    /**
+     * Выполняет левый поворот дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после поворота
+     */
+    private static <K, V> AVLTreeNode<K, V> rotateLeft(AVLTreeNode<K, V> node) {
+        AVLTreeNode<K, V> rightNode = node.right;
+        AVLTreeNode<K, V> leftRightNode = rightNode.left;
+        rightNode.left = node;
+        node.right = leftRightNode;
+        node.updateHeight();
+        rightNode.updateHeight();
+        return rightNode;
+    }
+
+    /**
+     * Выполняет правый поворот дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после поворота
+     */
+    private static <K, V> AVLTreeNode<K, V> rotateRight(AVLTreeNode<K, V> node) {
+        AVLTreeNode<K, V> leftNode = node.left;
+        AVLTreeNode<K, V> rightLeftNode = leftNode.right;
+        leftNode.right = node;
+        node.left = rightLeftNode;
+        node.updateHeight();
+        leftNode.updateHeight();
+        return leftNode;
+    }
+
+    /**
+     * Выполняет ребалансировку дерева, начинающегося с данной вершины.
+     *
+     * @param node - корень исходного дерева
+     * @return - новый корень дерева после реабалансировки
+     */
+    private static <K, V> AVLTreeNode<K, V> rebalance(AVLTreeNode<K, V> node) {
+        node.updateHeight();
+        final int balance = node.getBalance();
+        if (balance > 1) {
+            if (node.right.getRightHeight() <= node.right.getLeftHeight()) {
+                node.right = rotateRight(node.right);
+            }
+            node = rotateLeft(node);
+        } else if (balance < -1) {
+            if (node.left.getLeftHeight() <= node.left.getRightHeight()) {
+                node.left = rotateLeft(node.left);
+            }
+            node = rotateRight(node);
+        }
+        return node;
     }
 
     /**
@@ -80,7 +138,7 @@ public class AVLTreeNode<K,V> {
      * @param value - значение, добавляемое в дерево
      * @return - новый корень дерева
      */
-    public AVLTreeNode<K,V> insert(K key, V value) {
+    public AVLTreeNode<K, V> insert(K key, V value) {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -107,7 +165,7 @@ public class AVLTreeNode<K,V> {
      * @return - новый корень дерева
      * @throws KeyNotPresentException - выбрасывается, если в дереве нет узла с заданным ключем.
      */
-    public AVLTreeNode<K,V>  remove(Object key) throws KeyNotPresentException {
+    public AVLTreeNode<K, V> remove(Object key) throws KeyNotPresentException {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -123,7 +181,7 @@ public class AVLTreeNode<K,V> {
             if (left == null || right == null) {
                 return (left == null) ? right : left;
             }
-            AVLTreeNode<K,V>  leftmostChildOnRight = right.getLeftmostChild();
+            AVLTreeNode<K, V> leftmostChildOnRight = right.getLeftmostChild();
             this.pair = leftmostChildOnRight.pair;
             right = right.remove(leftmostChildOnRight.pair.getKey());
         }
@@ -153,7 +211,13 @@ public class AVLTreeNode<K,V> {
         }
     }
 
-    public Map.Entry<K,V> getEntry(Object key) {
+    /**
+     * Возвращает пару ключ-значение, хранимую в узле дерева с заданным ключом
+     *
+     * @param key - искомый ключ
+     * @return - пара ключ-значение
+     */
+    public Map.Entry<K, V> getEntry(Object key) {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -223,8 +287,8 @@ public class AVLTreeNode<K,V> {
      * @param pair - искоммая пара ключ-значение
      * @return - true, если пара хранится в одном из узлов дерева, false в противном случае
      */
-    public boolean containsPair(KeyValuePair<?,?> pair) {
-        final int comparison = getComparison(this.pair.getKey(), (K)pair.getKey());
+    public boolean containsPair(KeyValuePair<?, ?> pair) {
+        final int comparison = getComparison(this.pair.getKey(), pair.getKey());
         if (comparison > 0) {
             if (right == null) {
                 return false;
@@ -245,9 +309,9 @@ public class AVLTreeNode<K,V> {
      *
      * @return - список пар ключ-значение, минимум 1 пара.
      */
-    public List<KeyValuePair<K,V>> getKeyValuePairs() {
+    public List<KeyValuePair<K, V>> getKeyValuePairs() {
 
-        List<KeyValuePair<K,V>> pairs = new ArrayList<>();
+        List<KeyValuePair<K, V>> pairs = new ArrayList<>();
         if (left != null) {
             pairs.addAll(left.getKeyValuePairs());
         }
@@ -264,7 +328,7 @@ public class AVLTreeNode<K,V> {
      * @return - массив хэшей пар ключ-значение, минимум 1 хэш.
      */
     public int[] getKeyValuePairsHashes() {
-        final List<KeyValuePair<K,V>> pairs = getKeyValuePairs();
+        final List<KeyValuePair<K, V>> pairs = getKeyValuePairs();
         final int[] hashes = new int[pairs.size()];
         for (int i = 0; i < pairs.size(); i++) {
             hashes[i] = pairs.get(i).hashCode();
@@ -288,10 +352,10 @@ public class AVLTreeNode<K,V> {
     }
 
     @Override
-    public String toString() {
-        final StringBuilder strB = new StringBuilder();
-        describeTree(strB);
-        return "AVLTree{" + strB + "}";
+    public int hashCode() {
+        final int[] hashes = getKeyValuePairsHashes();
+        Arrays.sort(hashes);
+        return Arrays.hashCode(hashes);
     }
 
     @Override
@@ -299,10 +363,10 @@ public class AVLTreeNode<K,V> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof  AVLTreeNode<?,?>)) {
+        if (!(o instanceof AVLTreeNode<?, ?>)) {
             return false;
         }
-        final AVLTreeNode<?,?> that = (AVLTreeNode<?,?>) o;
+        final AVLTreeNode<?, ?> that = (AVLTreeNode<?, ?>) o;
         if (height != that.height) {
             return false;
         }
@@ -310,22 +374,28 @@ public class AVLTreeNode<K,V> {
     }
 
     @Override
-    public int hashCode() {
-        final int[] hashes = getKeyValuePairsHashes();
-        Arrays.sort(hashes);
-        return Arrays.hashCode(hashes);
+    public String toString() {
+        final StringBuilder strB = new StringBuilder();
+        describeTree(strB);
+        return "AVLTree{" + strB + "}";
     }
 
-
+    /**
+     * Выполняет сравнение между нашим ключом и данным ключом
+     * Если не задан компаратор и ключи не реализуют Comparable, возникнет исключение
+     *
+     * @param ourKey   - наш ключ
+     * @param otherKey - данный ключ
+     * @return - отрицательно число, если наш ключ меньше, 0, если ключи равны
+     * и положительное число, если наш ключ больше.
+     */
     private int getComparison(K ourKey, Object otherKey) {
         if (comparator != null) {
-            return comparator.compare(ourKey, (K)otherKey);
-        }
-        else {
-            return ((Comparable<K>) ourKey).compareTo((K)otherKey);
+            return comparator.compare(ourKey, (K) otherKey);
+        } else {
+            return ((Comparable<K>) ourKey).compareTo((K) otherKey);
         }
     }
-
 
     /**
      * Проверяет является ли логически данное дерево подмножеством другого:
@@ -334,9 +404,9 @@ public class AVLTreeNode<K,V> {
      * @param treeNode - корень другого деревого
      * @return - true, если все элементы данного дерева входят в другое, false в обратном случае
      */
-    private boolean isSubTreeOf(AVLTreeNode<?,?> treeNode) {
-        final List<KeyValuePair<K,V>> pairs = getKeyValuePairs();
-        for (KeyValuePair<K,V> pair : pairs) {
+    private boolean isSubTreeOf(AVLTreeNode<?, ?> treeNode) {
+        final List<KeyValuePair<K, V>> pairs = getKeyValuePairs();
+        for (KeyValuePair<K, V> pair : pairs) {
             if (!treeNode.containsPair(pair)) {
                 return false;
             }
@@ -363,62 +433,6 @@ public class AVLTreeNode<K,V> {
     }
 
     /**
-     * Выполняет левый поворот дерева, начинающегося с данной вершины.
-     *
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после поворота
-     */
-    private static <K,V> AVLTreeNode<K,V> rotateLeft(AVLTreeNode<K,V> node) {
-        AVLTreeNode<K,V> rightNode = node.right;
-        AVLTreeNode<K,V> leftRightNode = rightNode.left;
-        rightNode.left = node;
-        node.right = leftRightNode;
-        node.updateHeight();
-        rightNode.updateHeight();
-        return rightNode;
-    }
-
-    /**
-     * Выполняет правый поворот дерева, начинающегося с данной вершины.
-     *
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после поворота
-     */
-    private static <K,V> AVLTreeNode<K,V> rotateRight(AVLTreeNode<K,V> node) {
-        AVLTreeNode<K,V> leftNode = node.left;
-        AVLTreeNode<K,V> rightLeftNode = leftNode.right;
-        leftNode.right = node;
-        node.left = rightLeftNode;
-        node.updateHeight();
-        leftNode.updateHeight();
-        return leftNode;
-    }
-
-    /**
-     * Выполняет ребалансировку дерева, начинающегося с данной вершины.
-     *
-     * @param node - корень исходного дерева
-     * @return - новый корень дерева после реабалансировки
-     */
-    private static <K,V> AVLTreeNode<K,V> rebalance(AVLTreeNode<K,V> node) {
-        node.updateHeight();
-        final int balance = node.getBalance();
-        if (balance > 1) {
-            if (node.right.getRightHeight() <= node.right.getLeftHeight()) {
-                node.right = rotateRight(node.right);
-            }
-            node = rotateLeft(node);
-
-        } else if (balance < -1) {
-            if (node.left.getLeftHeight() <= node.left.getRightHeight()) {
-                node.left = rotateLeft(node.left);
-            }
-            node = rotateRight(node);
-        }
-        return node;
-    }
-
-    /**
      * Перерасчитывает высоту узла в дереве, исходя из высот его поддеревьев
      */
     private void updateHeight() {
@@ -439,7 +453,7 @@ public class AVLTreeNode<K,V> {
      *
      * @return - крайний левый лист в дереве, начинающемся с этой вершины
      */
-    private AVLTreeNode<K,V> getLeftmostChild() {
+    private AVLTreeNode<K, V> getLeftmostChild() {
         if (this.left == null) {
             return this;
         } else {

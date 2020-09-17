@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Иммутабельная пара ключа и значения, позволяющая сравнения между парами
- * за счет ограничения типа ключа до сравнимого
+ * Мутабельная пара ключа и значения
+ *
+ * @param <K> - тип ключа
+ * @param <V> - тип значения
  */
 public class KeyValuePair<K, V> implements Map.Entry<K, V> {
 
@@ -13,7 +15,7 @@ public class KeyValuePair<K, V> implements Map.Entry<K, V> {
     private V value;
 
     /**
-     * Создает новый иммутабельный объект ключ-значение
+     * Создает новый  объект ключ-значение
      *
      * @param key   - ключ нового объекта
      * @param value - значение нового объекта
@@ -23,10 +25,12 @@ public class KeyValuePair<K, V> implements Map.Entry<K, V> {
         this.value = value;
     }
 
+    @Override
     public K getKey() {
         return key;
     }
 
+    @Override
     public V getValue() {
         return value;
     }
@@ -62,10 +66,8 @@ public class KeyValuePair<K, V> implements Map.Entry<K, V> {
     }
 
     @Override
-    public String toString() {
-        final StringBuilder strB = new StringBuilder();
-        describeSelf(strB);
-        return "KeyValuePair" + strB;
+    public int hashCode() {
+        return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 
     @Override
@@ -73,16 +75,18 @@ public class KeyValuePair<K, V> implements Map.Entry<K, V> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof  Map.Entry)) {
+        if (!(o instanceof Map.Entry)) {
             return false;
         }
-        final Map.Entry<?,?> that = (Map.Entry<?,?>)o;
+        final Map.Entry<?, ?> that = (Map.Entry<?, ?>) o;
         return (Objects.equals(key, that.getKey()) &&
                 Objects.equals(value, that.getValue()));
     }
 
     @Override
-    public int hashCode() {
-        return  Objects.hashCode(key) ^ Objects.hashCode(value);
+    public String toString() {
+        final StringBuilder strB = new StringBuilder();
+        describeSelf(strB);
+        return "KeyValuePair" + strB;
     }
 }

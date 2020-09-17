@@ -9,13 +9,14 @@ import java.util.Map;
 
 /**
  * Класс узла списка - обертки вокруг пары ключ-значение.
- * Имеет возможность сравниваться с другими узлами за счет ограничения
- * типа ключа до сравнимого.
+ *
+ * @param <K> - тип ключа
+ * @param <V> - тип значения
  */
-public class ListNode<K,V> {
+public class ListNode<K, V> {
 
-    private KeyValuePair<K,V> pair;
-    private ListNode<K,V> next; // Ссылка для организации односвязного списка
+    private final KeyValuePair<K, V> pair;
+    private ListNode<K, V> next; // Ссылка для организации односвязного списка
     private long height; // Высота списка
 
     /**
@@ -64,7 +65,7 @@ public class ListNode<K,V> {
      * @return - новая голова списка.
      * @throws KeyNotPresentException - выбрасывается, если в списке нет узла с заданным ключем.
      */
-    public ListNode<K,V> removeFromList(Object key) throws KeyNotPresentException {
+    public ListNode<K, V> removeFromList(Object key) throws KeyNotPresentException {
         if (pair.hasKey(key)) {
             height--;
             return this.next;
@@ -102,7 +103,7 @@ public class ListNode<K,V> {
      * @param pair - искоммая пара ключ-значение
      * @return - true, если пара хранится в одном из узлов списка, false в противном случае
      */
-    public boolean containsPair(KeyValuePair<?,?> pair) {
+    public boolean containsPair(KeyValuePair<?, ?> pair) {
         if (this.pair.equals(pair)) {
             return true;
         }
@@ -151,7 +152,13 @@ public class ListNode<K,V> {
         }
     }
 
-    public Map.Entry<K,V> getEntry(Object key)   {
+    /**
+     * Возвращает пару ключ-значение, которая хранится в узле с заданным ключом
+     *
+     * @param key - искомый ключ
+     * @return - пара ключ-значение
+     */
+    public Map.Entry<K, V> getEntry(Object key) {
         if (pair.hasKey(key)) {
             return pair;
         }
@@ -167,14 +174,13 @@ public class ListNode<K,V> {
      *
      * @return - массив  пар ключ-значение, минимум 1 пара.
      */
-    public List<KeyValuePair<K,V>> getKeyValuePairs() {
-        List<KeyValuePair<K,V>> pairs = new ArrayList<>();
+    public List<KeyValuePair<K, V>> getKeyValuePairs() {
+        List<KeyValuePair<K, V>> pairs = new ArrayList<>();
         if (next != null) {
             pairs.addAll(next.getKeyValuePairs());
         }
         pairs.add(pair);
         return pairs;
-
     }
 
     /**
@@ -183,14 +189,13 @@ public class ListNode<K,V> {
      * @return - массив хэшей пар ключ-значение, минимум 1 хэш.
      */
     public int[] getKeyValuePairsHashes() {
-        final List<KeyValuePair<K,V>> pairs = getKeyValuePairs();
+        final List<KeyValuePair<K, V>> pairs = getKeyValuePairs();
         final int[] hashes = new int[pairs.size()];
         for (int i = 0; i < pairs.size(); i++) {
             hashes[i] = pairs.get(i).hashCode();
         }
         return hashes;
     }
-
 
     /**
      * Добавляет описание (ключ и значение) этого элемента и всех следующих за ним в списке
@@ -207,10 +212,10 @@ public class ListNode<K,V> {
     }
 
     @Override
-    public String toString() {
-        final StringBuilder strB = new StringBuilder();
-        describeList(strB);
-        return "List{" + strB + "}";
+    public int hashCode() {
+        final int[] hashes = getKeyValuePairsHashes();
+        Arrays.sort(hashes);
+        return Arrays.hashCode(hashes);
     }
 
     @Override
@@ -218,10 +223,10 @@ public class ListNode<K,V> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof  ListNode<?,?>)) {
+        if (!(o instanceof ListNode<?, ?>)) {
             return false;
         }
-        final ListNode<?,?> listNode = (ListNode<?,?>) o;
+        final ListNode<?, ?> listNode = (ListNode<?, ?>) o;
         if (this.height != listNode.height) { // Если у списков разная длина - не равны
             return false;
         }
@@ -229,10 +234,10 @@ public class ListNode<K,V> {
     }
 
     @Override
-    public int hashCode() {
-        final int[] hashes = getKeyValuePairsHashes();
-        Arrays.sort(hashes);
-        return Arrays.hashCode(hashes);
+    public String toString() {
+        final StringBuilder strB = new StringBuilder();
+        describeList(strB);
+        return "List{" + strB + "}";
     }
 
     /**
@@ -242,9 +247,9 @@ public class ListNode<K,V> {
      * @param listNode - голова другого списка
      * @return - true, если все элементы данного списка входят в другой, false в обратном случае
      */
-    private boolean isSubListOf(ListNode<?,?> listNode) {
-        final List<KeyValuePair<K,V>> pairs = getKeyValuePairs();
-        for (KeyValuePair<K,V> pair : pairs) {
+    private boolean isSubListOf(ListNode<?, ?> listNode) {
+        final List<KeyValuePair<K, V>> pairs = getKeyValuePairs();
+        for (KeyValuePair<K, V> pair : pairs) {
             if (!listNode.containsPair(pair)) {
                 return false;
             }

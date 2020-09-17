@@ -3,16 +3,20 @@ package org.innopolis.kuzymvas.generic.hashmap;
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.*;
 
+/**
+ *  Класс хэш таблицы, независимой от реализации своих корзин
+ * @param <K> - тип ключа таблицы
+ * @param <V> - тип значения таблицы
+ */
 public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
 
     private final List<Bucket<K, V>> buckets; // Массив корзин для каждого из возможных значений хэша
-    private int size; // Число пар ключ-значение в хранилище
     private final EntrySet entrySet;
     private final KeySet keySet;
     private final ValueList valueList;
+    private int size; // Число пар ключ-значение в хранилище
 
     /**
      * Создает хэш таблицу с 1024 корзинами
@@ -44,6 +48,38 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         valueList = new ValueList();
     }
 
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        final int keyHash = getKeyBucket(key);
+        return buckets.get(keyHash).containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return valueList.contains(value);
+    }
+
+    @Override
+    public V get(Object key) {
+        final int keyHash = getKeyBucket(key);
+        try {
+            return buckets.get(keyHash).get(key);
+        } catch (KeyNotPresentException e) {
+            return null;
+        }
+    }
+
     @Override
     public V put(K key, V value) {
         final int keyHash = getKeyBucket(key);
@@ -71,9 +107,9 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
     public V remove(Object key) {
         final int keyHash = getKeyBucket(key);
         try {
-            Map.Entry<K,V> entry = buckets.get(keyHash).getEntry(key);
+            Map.Entry<K, V> entry = buckets.get(keyHash).getEntry(key);
             if (entry == null) {
-                return  null;
+                return null;
             }
             buckets.get(keyHash).remove(key);
             entrySet.removeFromMap(entry);
@@ -124,7 +160,7 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
     public V replace(K key, V value) {
         final int keyHash = getKeyBucket(key);
         try {
-            final Entry<K,V> oldEntry = buckets.get(keyHash).getEntry(key);
+            final Entry<K, V> oldEntry = buckets.get(keyHash).getEntry(key);
             if (oldEntry != null) {
                 entrySet.removeFromMap(oldEntry);
                 V oldValue = oldEntry.getValue();
@@ -134,92 +170,10 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
                 valueList.addFromMap(value);
                 return oldValue;
             }
-            return  null;
+            return null;
         } catch (KeyNotPresentException e) {
             return null;
         }
-    }
-
-
-    public boolean containsPair(KeyValuePair<?, ?> pair) {
-        final int keyHash = getKeyBucket(pair.getKey());
-        return buckets.get(keyHash).containsPair(pair);
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean containsKey(Object key) {
-        final int keyHash = getKeyBucket(key);
-        return buckets.get(keyHash).containsKey(key);
-    }
-
-    @Override
-    public boolean containsValue(Object value) {
-        return valueList.contains(value);
-    }
-
-    @Override
-    public V get(Object key) {
-        final int keyHash = getKeyBucket(key);
-        try {
-            return buckets.get(keyHash).get(key);
-        } catch (KeyNotPresentException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
-        for (int i = 0; i < buckets.size(); i++) {
-            strB.append("bucket[").append(i).append("]{");
-            buckets.get(i).describeBucket(strB);
-            strB.append((i < buckets.size() - 1) ? "}," : "}");
-        }
-        strB.append(" }");
-        return strB.toString();
-    }
-
-    /**
-     * Проверяет эквиваленность данной хэш таблицы объекту.
-     * Для эквивалентности объект должен реализовывать интерфейс unicomparable.hashmap.HashMap
-     * и содержать в точности те же пары ключ-значение, что и эта таблица.
-     * Внутренняя стрктура объекта не важна для эквивалентности.
-     *
-     * @param o - объект по отношению к которому проверяется эквивалетность
-     * @return - true, если таблица и объект эквивалентны, false в противном случае
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BucketAgnosticHashMap)) {
-            return false;
-        }
-        final BucketAgnosticHashMap<?, ?> that = (BucketAgnosticHashMap<?, ?>) o;
-        if (this.size != that.size()) // разные размеры -> не равны
-        {
-            return false;
-        }
-        for (Bucket<K, V> bucket : buckets) { // Из каждого ведра
-            List<KeyValuePair<K, V>> pairs = bucket.getKeyValuePairs();
-            for (KeyValuePair<K, V> pair : pairs) { // Каждую пару, что в нем есть
-                if (!that.containsPair(pair)) { // Ищем в другом
-                    return false;
-                }
-            }
-        }
-        return true;// Если размеры совпали и каждая наша пара есть в другом -> равны
     }
 
     /**
@@ -245,6 +199,49 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
     }
 
     /**
+     * Проверяет эквиваленность данной хэш таблицы объекту.
+     * Для эквивалентности объект должен реализовывать интерфейс Map.
+     * и содержать в точности те же пары ключ-значение, что и эта таблица.
+     * Внутренняя структура объекта не важна для эквивалентности.
+     *
+     * @param o - объект по отношению к которому проверяется эквивалетность
+     * @return - true, если таблица и объект эквивалентны, false в противном случае
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Map)) {
+            return false;
+        }
+        final Map<?, ?> that = (Map<?, ?>) o;
+        if (this.size != that.size()) // разные размеры -> не равны
+        {
+            return false;
+        }
+        for (Bucket<K, V> bucket : buckets) { // Из каждого ведра
+            List<KeyValuePair<K, V>> pairs = bucket.getKeyValuePairs();
+            if (!that.entrySet().containsAll(pairs)) {
+                return false;
+            }
+        }
+        return true;// Если размеры совпали и каждая наша пара есть в другом -> равны
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder strB = new StringBuilder("SimpleHashMap{ size=").append(size).append(", buckets=");
+        for (int i = 0; i < buckets.size(); i++) {
+            strB.append("bucket[").append(i).append("]{");
+            buckets.get(i).describeBucket(strB);
+            strB.append((i < buckets.size() - 1) ? "}," : "}");
+        }
+        strB.append(" }");
+        return strB.toString();
+    }
+
+    /**
      * Определяет номер корзины, соответствующей ключу
      *
      * @param key - ключ
@@ -255,22 +252,12 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         return (key == null) ? 0 : Math.abs(key.hashCode()) % buckets.size();
     }
 
-    final class EntrySet extends HashSet<Map.Entry<K,V>> {
-
-        @Override
-        public boolean remove(Object o) {
-            if (! (o instanceof  Map.Entry)) {
-                return false;
-            }
-            Map.Entry entry = (Map.Entry) o;
-            if (BucketAgnosticHashMap.this.containsKey(entry.getKey())) {
-                BucketAgnosticHashMap.this.remove(entry.getKey());
-                return  true;
-            }
-            else {
-                return  false;
-            }
-        }
+    /**
+     * Класс множества пар ключ-значения, содержащихся в таблице
+     * Множество связано с таблицей и удаление пары из него приводит к удалению пары из таблицы
+     * Пары не могут быть добавлены в множество.
+     */
+    final class EntrySet extends HashSet<Map.Entry<K, V>> {
 
         @Override
         public boolean add(Entry<K, V> kvEntry) {
@@ -278,55 +265,70 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
+        public boolean remove(Object o) {
+            if (!(o instanceof Map.Entry)) {
+                return false;
+            }
+            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+            if (BucketAgnosticHashMap.this.containsKey(entry.getKey())) {
+                BucketAgnosticHashMap.this.remove(entry.getKey());
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
         public void clear() {
             BucketAgnosticHashMap.this.clear();
         }
 
-        private boolean removeFromMap(Object o) {
-            return super.remove(o);
+        private void removeFromMap(Object o) {
+            super.remove(o);
         }
 
-        private boolean addFromMap(Entry<K, V> kvEntry) {
-            return super.add(kvEntry);
+        private void addFromMap(Entry<K, V> kvEntry) {
+            super.add(kvEntry);
         }
 
         private void clearFromMap() {
             super.clear();
         }
-
     }
 
+    /**
+     * Класс множества ключей, содержащихся в таблице
+     * Множество связано с таблицей и удаление ключа из него приводит к удалению пары с этим ключом из таблицы
+     * Ключи не могут быть добавлены в множество.
+     */
     final class KeySet extends HashSet<K> {
-
-        @Override
-        public boolean remove(Object o) {
-            if (BucketAgnosticHashMap.this.containsKey(o)) {
-                BucketAgnosticHashMap.this.remove(o);
-                return  true;
-            }
-            else {
-                return  false;
-            }
-        }
-
 
         @Override
         public boolean add(K key) {
             throw new UnsupportedOperationException("Add is unsupported");
         }
 
+        @Override
+        public boolean remove(Object o) {
+            if (BucketAgnosticHashMap.this.containsKey(o)) {
+                BucketAgnosticHashMap.this.remove(o);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         @Override
         public void clear() {
             BucketAgnosticHashMap.this.clear();
         }
 
-        private boolean removeFromMap(Object o) {
-            return super.remove(o);
+        private void removeFromMap(Object o) {
+            super.remove(o);
         }
 
-        private boolean addFromMap(K key) {
-            return super.add(key);
+        private void addFromMap(K key) {
+            super.add(key);
         }
 
         private void clearFromMap() {
@@ -334,12 +336,12 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         }
     }
 
+    /**
+     * Класс коллекции значений, содержащихся в таблице
+     * Коллекция связана с таблицей и его очистка приведет к удалению всех пар ключ-значение из таблицы
+     * Значения не могут быть добавлены или удалены из множества.
+     */
     final class ValueList extends LinkedList<V> {
-        @Override
-        public boolean remove(Object o) {
-            throw new UnsupportedOperationException("Remove is unsupported");
-        }
-
         @Override
         public boolean removeAll(Collection<?> c) {
             throw new UnsupportedOperationException("Remove is unsupported");
@@ -348,6 +350,11 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         @Override
         public boolean add(V value) {
             throw new UnsupportedOperationException("Add is unsupported");
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException("Remove is unsupported");
         }
 
         @Override
@@ -360,18 +367,16 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
             BucketAgnosticHashMap.this.clear();
         }
 
-        private boolean removeFromMap(Object o) {
-            return super.remove(o);
+        private void removeFromMap(Object o) {
+            super.remove(o);
         }
 
-        private boolean addFromMap(V value) {
-            return super.add(value);
+        private void addFromMap(V value) {
+            super.add(value);
         }
 
         private void clearFromMap() {
             super.clear();
         }
-
     }
-
 }
