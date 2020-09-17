@@ -107,7 +107,7 @@ public class AVLTreeNode<K,V> {
      * @return - новый корень дерева
      * @throws KeyNotPresentException - выбрасывается, если в дереве нет узла с заданным ключем.
      */
-    public AVLTreeNode<K,V>  remove(K key) throws KeyNotPresentException {
+    public AVLTreeNode<K,V>  remove(Object key) throws KeyNotPresentException {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -136,7 +136,7 @@ public class AVLTreeNode<K,V> {
      * @param key - ключ искомого узла
      * @throws KeyNotPresentException - выбрасывается, если в списке нет узла с заданным ключем.
      */
-    public V getValue(K key) throws KeyNotPresentException {
+    public V getValue(Object key) throws KeyNotPresentException {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -183,7 +183,7 @@ public class AVLTreeNode<K,V> {
      * @param key - искомый ключ
      * @return - true, если ключ хранится в одном из узлов дерева, false в противном случае
      */
-    public boolean containsKey(K key) {
+    public boolean containsKey(Object key) {
         final int comparison = getComparison(this.pair.getKey(), key);
         if (comparison > 0) {
             if (right == null) {
@@ -300,12 +300,12 @@ public class AVLTreeNode<K,V> {
     }
 
 
-    private int getComparison(K ourKey, K otherKey) {
+    private int getComparison(K ourKey, Object otherKey) {
         if (comparator != null) {
-            return comparator.compare(ourKey, otherKey);
+            return comparator.compare(ourKey, (K)otherKey);
         }
         else {
-            return ((Comparable<K>) ourKey).compareTo(otherKey);
+            return ((Comparable<K>) ourKey).compareTo((K)otherKey);
         }
     }
 

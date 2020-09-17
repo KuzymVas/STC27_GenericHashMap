@@ -63,7 +63,7 @@ public class ListNode<K,V> {
      * @return - новая голова списка.
      * @throws KeyNotPresentException - выбрасывается, если в списке нет узла с заданным ключем.
      */
-    public ListNode<K,V> removeFromList(K key) throws KeyNotPresentException {
+    public ListNode<K,V> removeFromList(Object key) throws KeyNotPresentException {
         if (pair.hasKey(key)) {
             height--;
             return this.next;
@@ -84,7 +84,7 @@ public class ListNode<K,V> {
      * @param key - искомый ключ
      * @return - true, если ключ хранится в одном из узлов списка, false в противном случае
      */
-    public boolean containsKey(K key) {
+    public boolean containsKey(Object key) {
         if (pair.hasKey(key)) {
             return true;
         }
@@ -139,7 +139,7 @@ public class ListNode<K,V> {
      * @param key - ключ изменяемого узла
      * @throws KeyNotPresentException - выбрасывается, если в списке нет узла с заданным ключем.
      */
-    public V getValue(K key) throws KeyNotPresentException {
+    public V getValue(Object key) throws KeyNotPresentException {
         if (pair.hasKey(key)) {
             return pair.getValue();
         }
