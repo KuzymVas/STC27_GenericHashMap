@@ -124,11 +124,17 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
     public V replace(K key, V value) {
         final int keyHash = getKeyBucket(key);
         try {
-            final V oldValue = buckets.get(keyHash).get(key);
-            buckets.get(keyHash).replace(key, value);
-            valueList.removeFromMap(oldValue);
-            valueList.addFromMap(value);
-            return  oldValue;
+            final Entry<K,V> oldEntry = buckets.get(keyHash).getEntry(key);
+            if (oldEntry != null) {
+                entrySet.removeFromMap(oldEntry);
+                V oldValue = oldEntry.getValue();
+                buckets.get(keyHash).replace(key, value);
+                entrySet.addFromMap(buckets.get(keyHash).getEntry(key));
+                valueList.removeFromMap(oldValue);
+                valueList.addFromMap(value);
+                return oldValue;
+            }
+            return  null;
         } catch (KeyNotPresentException e) {
             return null;
         }
