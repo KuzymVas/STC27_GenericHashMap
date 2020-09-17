@@ -73,16 +73,16 @@ public class KeyValuePair<K, V> implements Map.Entry<K, V> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof KeyValuePair<?, ?>)) {
+        if (!(o instanceof  Map.Entry)) {
             return false;
         }
-        final KeyValuePair<?, ?> that = (KeyValuePair<?, ?>) o;
-        return Objects.equals(key, that.key) &&
-                Objects.equals(value, that.value);
+        final Map.Entry<?,?> that = (Map.Entry<?,?>)o;
+        return (Objects.equals(key, that.getKey()) &&
+                Objects.equals(value, that.getValue()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, value);
+        return  Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 }
