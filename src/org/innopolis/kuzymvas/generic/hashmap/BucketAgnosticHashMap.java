@@ -3,12 +3,16 @@ package org.innopolis.kuzymvas.generic.hashmap;
 import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.*;
 
 public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
 
     private final List<Bucket<K, V>> buckets; // Массив корзин для каждого из возможных значений хэша
     private int size; // Число пар ключ-значение в хранилище
+    private final EntrySet entrySet;
+    private final KeySet keySet;
+    private final ValueList valueList;
 
     /**
      * Создает хэш таблицу с 1024 корзинами
@@ -35,6 +39,9 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
             throw new IllegalArgumentException("Hash map can't have 0 or less buckets");
         }
         buckets = factory.createBuckets(bucketNumber);
+        entrySet = new EntrySet();
+        keySet = new KeySet();
+        valueList = new ValueList();
     }
 
     @Override
@@ -49,7 +56,13 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
             }
         }
         if (buckets.get(keyHash).put(key, value)) {
+            entrySet.addFromMap(buckets.get(keyHash).getEntry(key));
+            keySet.addFromMap(key);
+            valueList.addFromMap(value);
             size++;
+        } else {
+            valueList.removeFromMap(oldValue);
+            valueList.addFromMap(value);
         }
         return oldValue;
     }
@@ -58,10 +71,16 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
     public V remove(Object key) {
         final int keyHash = getKeyBucket(key);
         try {
-            final V value = buckets.get(keyHash).get(key);
+            Map.Entry<K,V> entry = buckets.get(keyHash).getEntry(key);
+            if (entry == null) {
+                return  null;
+            }
             buckets.get(keyHash).remove(key);
+            entrySet.removeFromMap(entry);
+            keySet.removeFromMap(key);
+            valueList.removeFromMap(entry.getValue());
             size--;
-            return value;
+            return entry.getValue();
         } catch (KeyNotPresentException e) {
             return null;
         }
@@ -69,27 +88,36 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-
+        Set<? extends Entry<? extends K, ? extends V>> entries = m.entrySet();
+        for (Entry<? extends K, ? extends V> entry : entries) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
     public void clear() {
-
+        size = 0;
+        for (Bucket<K, V> bucket : buckets) {
+            bucket.clear();
+        }
+        entrySet.clearFromMap();
+        keySet.clearFromMap();
+        valueList.clearFromMap();
     }
 
     @Override
     public Set<K> keySet() {
-        return null;
+        return keySet;
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        return valueList;
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        return entrySet;
     }
 
     @Override
@@ -98,6 +126,8 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         try {
             final V oldValue = buckets.get(keyHash).get(key);
             buckets.get(keyHash).replace(key, value);
+            valueList.removeFromMap(oldValue);
+            valueList.addFromMap(value);
             return  oldValue;
         } catch (KeyNotPresentException e) {
             return null;
@@ -110,13 +140,14 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
         return buckets.get(keyHash).containsPair(pair);
     }
 
+    @Override
     public int size() {
         return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
@@ -127,7 +158,7 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        return valueList.contains(value);
     }
 
     @Override
@@ -217,4 +248,124 @@ public class BucketAgnosticHashMap<K, V> implements Map<K, V> {
 
         return (key == null) ? 0 : Math.abs(key.hashCode()) % buckets.size();
     }
+
+    final class EntrySet extends HashSet<Map.Entry<K,V>> {
+
+        @Override
+        public boolean remove(Object o) {
+            if (! (o instanceof  Map.Entry)) {
+                return false;
+            }
+            Map.Entry entry = (Map.Entry) o;
+            if (BucketAgnosticHashMap.this.containsKey(entry.getKey())) {
+                BucketAgnosticHashMap.this.remove(entry.getKey());
+                return  true;
+            }
+            else {
+                return  false;
+            }
+        }
+
+        @Override
+        public boolean add(Entry<K, V> kvEntry) {
+            throw new UnsupportedOperationException("Add is unsupported");
+        }
+
+        @Override
+        public void clear() {
+            BucketAgnosticHashMap.this.clear();
+        }
+
+        private boolean removeFromMap(Object o) {
+            return super.remove(o);
+        }
+
+        private boolean addFromMap(Entry<K, V> kvEntry) {
+            return super.add(kvEntry);
+        }
+
+        private void clearFromMap() {
+            super.clear();
+        }
+
+    }
+
+    final class KeySet extends HashSet<K> {
+
+        @Override
+        public boolean remove(Object o) {
+            if (BucketAgnosticHashMap.this.containsKey(o)) {
+                BucketAgnosticHashMap.this.remove(o);
+                return  true;
+            }
+            else {
+                return  false;
+            }
+        }
+
+
+        @Override
+        public boolean add(K key) {
+            throw new UnsupportedOperationException("Add is unsupported");
+        }
+
+
+        @Override
+        public void clear() {
+            BucketAgnosticHashMap.this.clear();
+        }
+
+        private boolean removeFromMap(Object o) {
+            return super.remove(o);
+        }
+
+        private boolean addFromMap(K key) {
+            return super.add(key);
+        }
+
+        private void clearFromMap() {
+            super.clear();
+        }
+    }
+
+    final class ValueList extends LinkedList<V> {
+        @Override
+        public boolean remove(Object o) {
+            throw new UnsupportedOperationException("Remove is unsupported");
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            throw new UnsupportedOperationException("Remove is unsupported");
+        }
+
+        @Override
+        public boolean add(V value) {
+            throw new UnsupportedOperationException("Add is unsupported");
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends V> c) {
+            throw new UnsupportedOperationException("Add is unsupported");
+        }
+
+        @Override
+        public void clear() {
+            BucketAgnosticHashMap.this.clear();
+        }
+
+        private boolean removeFromMap(Object o) {
+            return super.remove(o);
+        }
+
+        private boolean addFromMap(V value) {
+            return super.add(value);
+        }
+
+        private void clearFromMap() {
+            super.clear();
+        }
+
+    }
+
 }

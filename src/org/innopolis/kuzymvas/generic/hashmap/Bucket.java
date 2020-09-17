@@ -4,6 +4,7 @@ import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Bucket<K,V> {
 
@@ -82,4 +83,8 @@ public interface Bucket<K,V> {
      * @return - массив хэшей всех содержащихся в корзине пар ключ-значение
      */
     int[] getKeyValuePairsHashes();
+
+    Map.Entry<K,V> getEntry(Object key);
+
+    void clear();
 }

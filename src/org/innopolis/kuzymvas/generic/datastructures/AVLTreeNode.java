@@ -153,6 +153,23 @@ public class AVLTreeNode<K,V> {
         }
     }
 
+    public Map.Entry<K,V> getEntry(Object key) {
+        final int comparison = getComparison(this.pair.getKey(), key);
+        if (comparison > 0) {
+            if (right == null) {
+                return null;
+            }
+            return right.getEntry(key);
+        } else if (comparison < 0) {
+            if (left == null) {
+                return null;
+            }
+            return left.getEntry(key);
+        } else {
+            return pair;
+        }
+    }
+
     /**
      * Заменяет значение, хранимое в узле дерева с заданным ключом
      *

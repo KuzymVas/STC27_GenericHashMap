@@ -6,6 +6,7 @@ import org.innopolis.kuzymvas.generic.datastructures.ListNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ListBucket<K,V> implements Bucket<K,V> {
 
@@ -87,5 +88,15 @@ public class ListBucket<K,V> implements Bucket<K,V> {
             return new int[0];
         }
         return head.getKeyValuePairsHashes();
+    }
+
+    @Override
+    public Map.Entry<K, V> getEntry(Object key) {
+        return head.getEntry(key);
+    }
+
+    @Override
+    public void clear() {
+        head = null;
     }
 }

@@ -5,6 +5,7 @@ import org.innopolis.kuzymvas.exceptions.KeyNotPresentException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Класс узла списка - обертки вокруг пары ключ-значение.
@@ -147,6 +148,17 @@ public class ListNode<K,V> {
             return next.getValue(key);
         } else {
             throw new KeyNotPresentException("Specified to be retrieved key do not exist on the list");
+        }
+    }
+
+    public Map.Entry<K,V> getEntry(Object key)   {
+        if (pair.hasKey(key)) {
+            return pair;
+        }
+        if (next != null) {
+            return next.getEntry(key);
+        } else {
+            return null;
         }
     }
 

@@ -5,17 +5,18 @@ import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MockBucket<K,V> implements Bucket<K,V> {
 
-    public boolean usedContainsKey;
-    public boolean usedPut, usedReplace, usedGet, usedRemove;
+    public boolean usedContainsKey, usedContainsPair;
+    public boolean usedPut, usedReplace, usedGet, usedRemove, usedClear;
     public String description;
-    public boolean usedContainsPair;
     public boolean throwExceptions;
     public boolean returnOnContainsRequests;
     public int hashValue;
     public boolean hasHash;
+    public KeyValuePair<K,V> mockPair = new KeyValuePair<>(null, null);
 
     @Override
     public boolean put(K key, V value) {
@@ -67,9 +68,9 @@ public class MockBucket<K,V> implements Bucket<K,V> {
 
     @Override
     public List<KeyValuePair<K, V>> getKeyValuePairs() {
-        List<KeyValuePair<K, V>> mockPair = new ArrayList<>();
-        mockPair.add(new KeyValuePair<>(null, null));
-        return mockPair;
+        List<KeyValuePair<K, V>> pairList = new ArrayList<>();
+        pairList.add(mockPair);
+        return pairList;
     }
 
     @Override
@@ -82,6 +83,16 @@ public class MockBucket<K,V> implements Bucket<K,V> {
         return new int[0];
     }
 
+    @Override
+    public Map.Entry<K, V> getEntry(Object key) {
+        return mockPair;
+    }
+
+    @Override
+    public void clear() {
+        usedClear = true;
+    }
+
     public void clearFlags() {
         usedPut = false;
         usedGet = false;
@@ -89,5 +100,6 @@ public class MockBucket<K,V> implements Bucket<K,V> {
         usedContainsPair = false;
         usedRemove = false;
         usedReplace = false;
+        usedClear = false;
     }
 }

@@ -6,6 +6,7 @@ import org.innopolis.kuzymvas.generic.datastructures.KeyValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AVLTreeBucket<K,V> implements Bucket<K,V> {
 
@@ -89,5 +90,15 @@ public class AVLTreeBucket<K,V> implements Bucket<K,V> {
             return new int[0];
         }
         return root.getKeyValuePairsHashes();
+    }
+
+    @Override
+    public Map.Entry<K, V> getEntry(Object key) {
+        return root.getEntry(key);
+    }
+
+    @Override
+    public void clear() {
+        root = null;
     }
 }

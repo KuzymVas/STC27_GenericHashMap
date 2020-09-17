@@ -5,37 +5,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BucketAgnosticHashMapTest {
-
-    private static class FixedHash {
-
-        private final int val;
-        private final int hash;
-
-        public FixedHash(int val, int hash) {
-            this.val = val;
-            this.hash = hash;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            FixedHash that = (FixedHash) o;
-            return (this.val == that.val);
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
-        }
-    }
 
     BucketAgnosticHashMap<FixedHash, Object> hashMap;
     List<MockBucket<FixedHash, Object>> buckets;
@@ -46,7 +20,7 @@ public class BucketAgnosticHashMapTest {
 
     @Before
     public void setUp() {
-        MockBucketFactory<FixedHash, Object> factory = new MockBucketFactory<>();
+        MockBucketFactory<FixedHash, Object> factory = new MockBucketFactory<>(false);
         hashMap = new BucketAgnosticHashMap<>(factory, 10);
         buckets = factory.getBackdoorToBuckets();
         negativeHashKey = new FixedHash(0, -1);
@@ -59,12 +33,12 @@ public class BucketAgnosticHashMapTest {
     @Test
     public void testConstructorException() {
         try {
-            new BucketAgnosticHashMap<>(new MockBucketFactory<FixedHash, Object>(), -1);
+            new BucketAgnosticHashMap<>(new MockBucketFactory<FixedHash, Object>(false), -1);
             Assert.fail("Was able to create hash map with a negative bucket count");
         } catch (IllegalArgumentException ignored) {
         }
         try {
-            new BucketAgnosticHashMap<>(new MockBucketFactory<FixedHash, Object>(), 0);
+            new BucketAgnosticHashMap<>(new MockBucketFactory<FixedHash, Object>(false), 0);
             Assert.fail("Was able to create hash map with a zero bucket count");
         } catch (IllegalArgumentException ignored) {
         }
@@ -90,13 +64,16 @@ public class BucketAgnosticHashMapTest {
 
     @Test
     public void testEmptySize() {
+
         Assert.assertEquals("Empty hash map size is incorrect", 0, hashMap.size());
+        Assert.assertTrue("Empty map indicated that it's not empty",hashMap.isEmpty());
     }
 
     @Test
     public void testSingleKey() {
         hashMap.put(firstSameHashKey, value);
         Assert.assertEquals("Hash map size is incorrect", 1, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
         int accessedBucketNum = -1;
         int putCounter = 0;
         for (int i = 0; i < buckets.size(); i++) {
@@ -156,6 +133,7 @@ public class BucketAgnosticHashMapTest {
 
         hashMap.remove(firstSameHashKey);
         Assert.assertEquals("Hash map size didn't go down after removal", 0, hashMap.size());
+        Assert.assertTrue("Empty map indicated that it's not empty",hashMap.isEmpty());
         Assert.assertTrue("During 'remove' attempt correct bucket wasn't accessed",
                           buckets.get(accessedBucketNum).usedRemove);
         int removeCounter = 0;
@@ -171,6 +149,7 @@ public class BucketAgnosticHashMapTest {
     public void testSameKey() {
         hashMap.put(firstSameHashKey, value);
         Assert.assertEquals("Hash map size is incorrect", 1, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
         int accessedBucketNum = -1;
         int putCounter = 0;
         for (int i = 0; i < buckets.size(); i++) {
@@ -184,6 +163,7 @@ public class BucketAgnosticHashMapTest {
 
         hashMap.put(secondSameHashKey, value);
         Assert.assertEquals("Hash map size is incorrect", 2, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
         Assert.assertTrue("During 'put' attempt with same hash of key same bucket wasn't accessed",
                           buckets.get(accessedBucketNum).usedPut);
         putCounter = 0;
@@ -259,6 +239,7 @@ public class BucketAgnosticHashMapTest {
     public void testDifferentKey() {
         hashMap.put(firstSameHashKey, value);
         Assert.assertEquals("Hash map size is incorrect", 1, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
         int accessedBucketNum = -1;
         int putCounter = 0;
         for (int i = 0; i < buckets.size(); i++) {
@@ -272,6 +253,7 @@ public class BucketAgnosticHashMapTest {
 
         hashMap.put(differentHashKey, value);
         Assert.assertEquals("Hash map size is incorrect", 2, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
         Assert.assertFalse("During 'put' attempt with different hash of key same bucket was accessed",
                            buckets.get(accessedBucketNum).usedPut);
         putCounter = 0;
@@ -286,7 +268,7 @@ public class BucketAgnosticHashMapTest {
 
     @Test
     public void testEquals() {
-        final MockBucketFactory<FixedHash, Object> factory = new MockBucketFactory<>();
+        final MockBucketFactory<FixedHash, Object> factory = new MockBucketFactory<>(false);
         final BucketAgnosticHashMap<FixedHash, Object> otherHashMap = new BucketAgnosticHashMap<>(factory, 10);
         final List<MockBucket<FixedHash, Object>> otherBuckets = factory.getBackdoorToBuckets();
 
@@ -337,5 +319,43 @@ public class BucketAgnosticHashMapTest {
                             secondHash);
         Assert.assertNotEquals("Hash map size didn't change when hashes of key-value pairs change", firstHash,
                                thirdHash);
+    }
+
+    @Test
+    public void testPutAll() {
+        Map<FixedHash, Object> realMap = new HashMap<>();
+        realMap.put(firstSameHashKey, null);
+        realMap.put(secondSameHashKey, null);
+        realMap.put(differentHashKey, null);
+        hashMap.putAll(realMap);
+        Assert.assertEquals("Hash map size is incorrect", 3, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
+        int putCounter = 0;
+        for (int i = 0; i < buckets.size(); i++) {
+            if (buckets.get(i).usedPut) {
+                putCounter++;
+            }
+        }
+        Assert.assertEquals("During 'putAll' different amount of bucket than expected two was accessed", 2, putCounter);
+    }
+
+    @Test
+    public void testClear() {
+        Map<FixedHash, Object> realMap = new HashMap<>();
+        realMap.put(firstSameHashKey, null);
+        realMap.put(secondSameHashKey, null);
+        realMap.put(differentHashKey, null);
+        hashMap.putAll(realMap);
+        Assert.assertEquals("Hash map size is incorrect", 3, hashMap.size());
+        Assert.assertFalse("Non-empty map indicated that it's empty",hashMap.isEmpty());
+        hashMap.clear();
+        int clearCounter = 0;
+        for (int i = 0; i < buckets.size(); i++) {
+            if (buckets.get(i).usedClear) {
+                clearCounter++;
+                buckets.get(i).clear();
+            }
+        }
+        Assert.assertEquals("During 'clear' not all buckets accessed", buckets.size(), clearCounter);
     }
 }
