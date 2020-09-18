@@ -91,6 +91,9 @@ public class AVLTreeBucket<K, V> implements Bucket<K, V> {
 
     @Override
     public Map.Entry<K, V> getEntry(Object key) {
+        if (root == null) {
+            return null;
+        }
         return root.getEntry(key);
     }
 

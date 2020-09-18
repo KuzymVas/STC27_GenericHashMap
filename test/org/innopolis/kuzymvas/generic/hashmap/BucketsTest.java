@@ -41,7 +41,7 @@ public class BucketsTest {
     @Before
     public void setUp() {
         // Создаем хранилище для тестирования
-        ;bucket = new BasicBucketFactory<Double,Object>(bucketType).createBucket();
+        bucket = new BasicBucketFactory<Double,Object>(bucketType).createBucket();
         // Подготавливаем массив объектов-ключей
         keys = new ArrayList<>(5);
         keys.add(1.0);
@@ -108,6 +108,18 @@ public class BucketsTest {
             }
         }
 
+    }
+
+    @Test
+    public void testBasicsNegative() {
+        Assert.assertFalse("Bucket reported that it contains key, that wasn't put into it", bucket.containsKey(invalidKey));
+        Assert.assertNull("Bucket returned entry for a key, that wasn't put into it", bucket.getEntry(invalidKey));
+        try {
+            bucket.get(invalidKey);
+            Assert.fail("Bucket " + bucketName + " 'get' method did NOT throw an exception on invalid key.");
+        } catch (KeyNotPresentException ignored) {
+
+        }
     }
 
     @Test

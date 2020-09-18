@@ -89,7 +89,11 @@ public class ListBucket<K, V> implements Bucket<K, V> {
     }
 
     @Override
-    public Map.Entry<K, V> getEntry(Object key) {
+    public Map.Entry<K, V> getEntry(Object key)
+    {
+        if (head == null) {
+            return null;
+        }
         return head.getEntry(key);
     }
 
